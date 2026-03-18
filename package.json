@@ -1,0 +1,42 @@
+{
+  "name": "backend_auth_ts",
+  "version": "1.0.0",
+  "description": "Complete authentication backend using TypeScript, Drizzle ORM, PostgreSQL with EJS support",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "keywords": ["node", "typescript", "drizzle", "postgresql", "auth"],
+  "author": "Hussain Ullah",
+  "license": "ISC",
+  "packageManager": "pnpm@10.24.0",
+  "dependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.30.0",
+    "pg": "^8.11.5",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "ejs": "^3.1.9",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "tsx": "^4.7.1",
+    "drizzle-kit": "^0.20.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.30",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/cookie-parser": "^1.4.6",
+    "@types/ejs": "^3.1.5"
+  }
+}
