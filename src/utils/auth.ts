@@ -1,15 +1,14 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 
-export const otp = Math.floor(1000 + Math.random() * 9000)
+export const generateOtp = (): number => {
+    return Math.floor(1000 + Math.random() * 9000);
+};
 
-// hash convert
-export const hashed = async (password: string): Promise<string> => {
-    const hash = await bcrypt.hash(password, 10);
-    return hash;
-}
+export const hashData = async (data: string | number): Promise<string> => {
+    const saltRounds = 10;
+    return await bcrypt.hash(data.toString(), saltRounds);
+};
 
-//  hash compare
-export const comparePassword = async(hash: string, password:string) : Promise<boolean> => {
-    const isMatch = await bcrypt.compare(password, hash);
-    return isMatch;
-}
+export const compareData = async (plainData: string | number, hashedData: string): Promise<boolean> => {
+    return await bcrypt.compare(plainData.toString(), hashedData);
+};

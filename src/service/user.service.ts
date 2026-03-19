@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 
 const getOtpExpiry = () => new Date(Date.now() + 10 * 60 * 1000);
 
+// create new user
 export const createUser = async (payload: User) => {
     const { name, email, password } = payload;
     const emailLower = email.toLowerCase();
@@ -25,18 +26,17 @@ export const createUser = async (payload: User) => {
             password: hashedPassword,
         }).returning();
 
-        // 1. OTP generate karein
+        // generate OTP
         const rawOtp = generateOtp();
         const hashedOtp = await hashData(rawOtp);
 
-        // 2. UserOtp table mein save karein
+        // save UserTable Data
         await tx.insert(UserOtp).values({
-            userId: newUser.id, // Schema fix: matching type
+            userId: newUser.id,
             hashedOtp: hashedOtp,
             otpExpiry: getOtpExpiry(),
         });
 
-        // 3. Yahan aap email send karne ka function call kar sakte hain (rawOtp ke saath)
         console.log(`OTP for ${emailLower}: ${rawOtp}`); 
 
         return newUser;
