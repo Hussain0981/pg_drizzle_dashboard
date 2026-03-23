@@ -28,7 +28,6 @@ export const users = pgTable("users", {
   index("user_id_idx").on(t.id),
 ]);
 
-// OTP Table
 export const usersOtp = pgTable("users_otp", {
   id: uuid().primaryKey().defaultRandom(),
   userId: integer()
@@ -36,6 +35,7 @@ export const usersOtp = pgTable("users_otp", {
     .notNull(),
   hashedOtp: varchar({ length: 255 }).notNull(),
   temporaryBlock: boolean().default(false),
+  blockedUntil: timestamp(),     
   retryAttempts: integer().notNull().default(0),
   otpExpiry: timestamp().notNull(),
   ...timestamps,
