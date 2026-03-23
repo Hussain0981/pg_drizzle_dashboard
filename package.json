@@ -35,6 +35,7 @@
     "pg": "^8.20.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.6",
     "@types/ejs": "^3.1.5",
@@ -43,7 +44,9 @@
     "@types/node": "^20.11.30",
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
+    "eslint": "^10.1.0",
     "tsx": "^4.7.1",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.57.2"
   }
 }
