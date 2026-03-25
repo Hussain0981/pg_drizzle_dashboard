@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import * as service from "../service/user.service";
 import type { User } from "../types/user";
+import { createUser } from '../service/users/registerUser'
+import { login } from '../service/users/loginUser'
+import { verifyOtp } from '../service/users/verifyUser'
 
 export const createUser = async (req: Request, res: Response) => {
     try {

@@ -1,8 +1,9 @@
 import { db } from "../../config/dbConnection";
+import { eq } from "drizzle-orm";
 import { usersOtp, users } from "../../db/schema/users";
 import { User } from '../../types/user';
 import { hashData, generateOtp } from '../../utils/auth';
-import { eq } from "drizzle-orm";
+import { sendOtp } from '../../utils/sendOtpToUser'
 
 const getOtpExpiry = () => new Date(Date.now() + 10 * 60 * 1000);
 
@@ -14,7 +15,7 @@ export const createUser = async (payload: User) => {
         where: eq(users.email, emailLower),
     });
 
-    if (existingUser) throw new Error('User with this email already exists');
+    if (existingUser) throw new Error('User with this email already exists Please try to login');
 
     const hashedPassword = await hashData(password);
 
@@ -35,6 +36,8 @@ export const createUser = async (payload: User) => {
             hashedOtp: hashedOtp,
             otpExpiry: getOtpExpiry(),
         });
+
+        await sendOtp(email, rawOtp)
 
         console.log(`OTP for ${emailLower}: ${rawOtp}`); 
 

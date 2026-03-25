@@ -6,24 +6,27 @@ const getOtpExpiry = () => new Date(Date.now() + 10 * 60 * 1000);
 
 
 export const resendOTP = async (email: string) => {
+
     const user = await db.query.users.findFirst({
         where: eq(users.email, email.toLowerCase()),
         with: {
             userOtp: true,
         }
-    });
 
+    });
     if (!user) throw new Error('User not found');
+    const existingOtp = await db.query.usersOtp.findFirst({
+        where: eq(usersOtp.userId, user.id),
+    });
+    if (existingOtp?.temporaryBlock) {
+        throw new Error('Your are temporary blocked please try again later')
+    }
 
     const rawOtp = generateOtp();
     const hashedOtp = await hashData(rawOtp);
 
-    const existingOtp = await db.query.usersOtp.findFirst({
-        where: eq(usersOtp.userId, user.id),
-    });
-
     let counter;
-    if(existingOtp) {
+    if (existingOtp) {
         counter = existingOtp.retryAttempts + 1
     }
 
