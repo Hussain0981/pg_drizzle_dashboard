@@ -2,4 +2,6 @@
 .env.development.local
 .env.production.local
 node_modules/
+
+src/public/css/output.css
 dist/
