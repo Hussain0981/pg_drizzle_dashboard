@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link rel="stylesheet" href="/public/css/output.css">
+</head>
+<body class="bg-gray-50 h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-md p-8 bg-white shadow-2xl rounded-2xl">
+        <form id="otpForm" class="space-y-6">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-800">Verify OTP</h1>
+                <p class="text-gray-500 mt-2">Enter the 5-digit code sent to your device</p>
+            </div>
+
+            <div class="flex justify-between gap-2" id="otpContainer">
+                </div>
+
+            <button type="submit" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 ease-in-out transform active:scale-[0.98]">
+                Verify Code
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const container = document.querySelector('#otpContainer');
+        const length = 5;
+        const inputs = [];
+
+        // 1. Initialize Inputs
+        for (let i = 0; i < length; i++) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.maxLength = 1;
+            input.placeholder = '•';
+            input.className = 'w-14 h-16 text-2xl text-center font-bold border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all';
+            
+            container.appendChild(input);
+            inputs.push(input);
+
+            // fucus next
+            input.addEventListener('input', (e) => {
+                const val = e.target.value;
+                if (val && i < length - 1) {
+                    inputs[i + 1].focus();
+                }
+            });
+
+            // focus back
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && i > 0) {
+                    inputs[i - 1].focus();
+                }
+            });
+
+            //  Handle Paste (Advanced)
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                console.log(e);
+                
+                const data = e.clipboardData.getData('text').slice(0, length).split('');
+                data.forEach((char, index) => {
+                    if (inputs[index]) {
+                        inputs[index].value = char;
+                        if (index < length - 1) inputs[index + 1].focus();
+                    }
+                });
+            });
+        }
+
+        // Submit Logic
+        document.querySelector('#otpForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const otpValue = inputs.map(el => el.value).join('');
+            
+            if (otpValue.length < length) {
+                alert("Please fill all fields");
+                return;
+            }
+            
+            console.log("Submitting OTP:", otpValue);
+            // api call
+        });
+    </script>
+</body>
+</html>
