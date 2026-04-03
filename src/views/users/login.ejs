@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-50">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Your App</title>
+    <link href="/public/css/output.css" rel="stylesheet">
+</head>
+
+<body class="h-full flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md">
+        <div class="bg-white shadow-2xl rounded-2xl p-8 border border-gray-100">
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-900">Welcome Back</h1>
+                <p class="text-gray-500 mt-2">Please enter your details to sign in</p>
+            </div>
+
+            <form action="/login" method="POST" class="space-y-5">
+                <div class="flex flex-col gap-2">
+                    <label for="email" class="text-sm font-semibold text-gray-700">Email Address</label>
+                    <input
+                        class="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400"
+                        type="email" id="email" name="email" placeholder="name@company.com" required>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <label for="password" class="text-sm font-semibold text-gray-700">Password</label>
+                        <a href="/users/forgot-password" class="text-xs text-blue-600 hover:underline">Forgot password?</a>
+                    </div>
+                    <input
+                        class="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400"
+                        type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition-all shadow-lg active:scale-[0.98]">
+                    Sign In
+                </button>
+                </div>
+            </form>
+
+            <p class="text-center text-sm text-gray-600  mt-8">
+                Don't have an account?
+                <a href="/users/register" class="font-bold text-blue-600 hover:underline">Create one</a>
+            </p>
+        </div>
+    </div>
+
+</body>
+<script>
+    const loginForm = document.querySelector('form');
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // 1. Extract Data
+        const formData = new FormData(loginForm);
+        const data = Object.fromEntries(formData.entries());
+
+        // 2. UI Feedback: Loading State
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+            <svg class="animate-spin h-5 w-5 mr-3 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Signing in...
+        `;
+
+        try {
+            // 3. API Call
+            const response = await fetch('/api/v1/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Redirect on success
+                window.location.href = '/dashboard';
+            } else {
+                // Show error (you can replace this with a nice toast notification)
+                alert(result.message || 'Login failed. Please check your credentials.');
+            }
+        } catch (error) {
+            console.error('Login Error:', error);
+            alert('A network error occurred. Please try again.');
+        } finally {
+            // 4. Reset Button State
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
+        }
+    });
+</script>
+
+</html>
