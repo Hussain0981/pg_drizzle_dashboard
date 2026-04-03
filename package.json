@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"tsx watch src/index.ts\" \"npx tailwindcss -i src/public/css/input.css -o src/public/css/output.css --watch\"",
+    "dev": "concurrently \"tsx watch src/index.ts\" \"npx tailwindcss -i public/css/input.css -o public/css/output.css --watch\"",
     "build": "tsc",
     "start": "node dist/index.js",
     "db:generate": "drizzle-kit generate:pg",
@@ -14,7 +14,7 @@
     "db:drop": "drizzle-kit drop",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build:css": "npx tailwindcss -i ./public/css/input.css -o ./public/css/output.css --minify"
+    "build:css": "npx tailwindcss -i ./src/public/css/input.css -o ./src/public/css/output.css --minify"
   },
   "keywords": [
     "node",

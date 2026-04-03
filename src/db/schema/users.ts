@@ -8,7 +8,6 @@ import {
   uuid,
   index,
   pgEnum,
-  text,
   boolean,
   timestamp,
 } from "drizzle-orm/pg-core";
@@ -20,7 +19,7 @@ export const userRole = pgEnum("user_role", ["Admin", "User"]);
 export const users = pgTable("users", {
   id: serial().primaryKey(),
   name: varchar({ length: 255 }).notNull(),
-  email: text().notNull().unique(),
+  email: varchar().notNull().unique(),
   password: varchar({ length: 255 }).notNull(),
   role: userRole().default("User").notNull(),
   ...timestamps,
