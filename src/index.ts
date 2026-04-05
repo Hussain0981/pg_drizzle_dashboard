@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-// solve MIME error
+// solve MIME error css
 app.get('/public/css/output.css', (req, res) => {
     res.type('text/css');
     res.sendFile(join(__dirname, "..".concat("/public/css/output.css")));
