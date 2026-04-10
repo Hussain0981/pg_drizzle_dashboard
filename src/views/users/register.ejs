@@ -58,54 +58,6 @@
             </p>
         </div>
     </div>
-
-    <script>
-        const form = document.getElementById('registerForm');
-        const errorMsg = document.getElementById('error-msg');
-        const name = document.querySelector('#name')
-        const email = document.querySelector('#email')
-        const password = document.querySelector('#password')
-        const confirm_password = document.querySelector('#confirm_password')
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            errorMsg.classList.add('hidden');
-
-            // Client-side Validation: Password Match
-            if (password.value !== confirm_password.value) {
-                errorMsg.innerText = "Passwords do not match!";
-                errorMsg.classList.remove('hidden');
-                return;
-            }
-            const formValue = {
-                name: name.value,
-                email: email.value,
-                password: password.value
-            }
-
-            //  Submit Logic
-            try {
-                const response = await fetch('/api/v1/user/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formValue)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    window.location.href = '/users/login?registered=true';
-                } else {
-                    errorMsg.innerText = result.message || "Registration failed.";
-                    errorMsg.classList.remove('hidden');
-                }
-            } catch (err) {
-                console.error(err);
-                errorMsg.innerText = "Connection error. Try again.";
-                errorMsg.classList.remove('hidden');
-            }
-        });
-    </script>
 </body>
-
+    <script src="/js/userRegister.js"></script>
 </html>
