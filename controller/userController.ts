@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import type { User } from "../../types/user";
-import { createUser } from '../../service/users/registerUser'
-import { login } from '../../service/users/loginUser'
-import { verifyUser } from '../../service/users/verifyUser'
-import { successResponse, failureResponse } from "../../helper/sendResponse";
-import { forgotPassword } from "../../service/users/forgotPassword";
-import { resetPassword } from "../../service/users/resetPassword";
-import { resendOtp } from "../../service/users/resendOtpToUser";
+import type { User } from "../types/user";
+import { createUser } from '../service/users/registerUser'
+import { login } from '../service/users/loginUser'
+import { verifyUser } from '../service/users/verifyUser'
+import { successResponse, failureResponse } from "../helper/sendResponse";
+import { forgotPassword } from "../service/users/forgotPassword";
+import { resetPassword } from "../service/users/resetPassword";
+import { resendOtp } from "../service/users/resendOtpToUser";
 
 export const createController = async (req: Request, res: Response) => {
     try {

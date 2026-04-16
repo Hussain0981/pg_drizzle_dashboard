@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Your App</title>
+    <title>Super Admin Login</title>
     <link href="/css/output.css" rel="stylesheet">
 </head>
 
@@ -13,11 +13,13 @@
     <div class="w-full max-w-md">
         <div class="bg-white shadow-2xl rounded-2xl p-8 border border-gray-100">
             <div class="mb-8 text-center">
-                <h1 class="text-3xl font-bold text-gray-900">Welcome Back</h1>
+                <h1 class="text-3xl font-bold text-gray-900">Super Admin (Owner)</h1>
                 <p class="text-gray-500 mt-2">Please enter your details to sign in</p>
-                <p class="bg-red-100 text-red-500 bg- mt-2 hidden p-2" id="error-msg"></p>
-                <p class="bg-green-500 text-green-600 mt-2 hidden p-2" id="success-msg"></p>
             </div>
+
+            <!-- Moved messages here for better visibility -->
+            <div id="error-msg" class="bg-red-100 text-red-700 mt-2 hidden p-3 rounded-lg mb-4"></div>
+            <div id="success-msg" class="bg-green-100 text-green-700 mt-2 hidden p-3 rounded-lg mb-4"></div>
 
             <form id="loginForm" class="space-y-5">
                 <div class="flex flex-col gap-2">
@@ -28,10 +30,7 @@
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <div class="flex justify-between items-center">
-                        <label for="password" class="text-sm font-semibold text-gray-700">Password</label>
-                        <button id="fogot-button" class="text-xs text-blue-600 hover:underline">Forgot password?</button>
-                    </div>
+                    <label for="password" class="text-sm font-semibold text-gray-700">Password</label>
                     <input
                         class="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400"
                         type="password" id="password" name="password" placeholder="••••••••" required>
@@ -39,19 +38,15 @@
 
                 <div class="pt-2">
                     <button type="submit" id="login-button"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition-all shadow-lg active:scale-[0.98]">
-                    Sign In
-                </button>
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition-all shadow-lg active:scale-[0.98]">
+                        Sign In
+                    </button>
                 </div>
             </form>
-
-            <p class="text-center text-sm text-gray-600  mt-8">
-                Don't have an account?
-                <a href="/users/register" class="font-bold text-blue-600 hover:underline">Create one</a>
-            </p>
         </div>
     </div>
 
+    <script src="/js/adminLogin.js"></script>
 </body>
-    <script src="/js/userLogin.js"></script>
+
 </html>
