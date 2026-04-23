@@ -1,20 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title || 'PharmaOS' %></title>
+  <title>
+    Open source dashboard
+  </title>
   <link rel="stylesheet" href="/css/output.css">
 </head>
+
 <body class="flex h-screen w-full overflow-hidden bg-slate-100">
 
-  
-  <div class="flex flex-col flex-1 overflow-hidden">
-    <%- include('../partials/theHeader') %>
-    <main class="flex-1 overflow-y-auto p-5">
-      <%- body %> 
-    </main>
+  <div class="flex overflow-hidden">
+    <div class="w-sm">
+      <aside>
+        <%- include('../partials/theSidebar') %>
+      </aside>
+
+    </div>
+    <div>
+      <header>
+        <%- include('../partials/theHeader') %>
+
+      </header>
+      <main class="flex-1 overflow-y-auto p-5">
+        <%- body %>
+      </main>
+    </div>
   </div>
 
 </body>
-</html> 
+
+</html>

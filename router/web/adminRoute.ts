@@ -3,8 +3,8 @@ import express from 'express'
 const router = express.Router();
 
 router.get('/', (req: Request, res: Response) => {
-    res.render('admin/login', {
-        title: 'Admin Login'
+    res.render('pages/login', {
+        pageTitle: 'Admin Login'
     });
 });
 export default router;

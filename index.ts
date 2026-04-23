@@ -4,6 +4,10 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { initSuperAdmin } from './utils/initAmin'
 import expressLayouts from 'express-ejs-layouts';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import { layoutDataMiddleware } from './middlewares/layoutDataMiddleware';
+
 
 // web routes import 
 import webAdminRoute from './router/web/adminRoute'
@@ -14,6 +18,7 @@ import webSettingsRoute from './router/web/settingRoute'
 import apiAdminRoute from './router/api/adminLoginRoute'
 import apiAdminSubmenuSettings from './router/api/adminSubmenuRoute'
 import apiAdminMenuSettings from './router/api/adminMenuRoute'
+import { ENV } from './config/dotenv';
 
 
 const app = express();
@@ -32,6 +37,24 @@ app.get('public/css/output.css', (req, res) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser(ENV.SESSION_SECRET));
+
+// session
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  }
+}));
+app.use(layoutDataMiddleware);
+
+
+// app.use(isAuthenticated)
+
 
 // View engine setup
 app.use(expressLayouts);
@@ -45,7 +68,7 @@ app.use((req, res, next) => {
 });
 // routes middlewares
 // web
-app.use('/admin/login', webAdminRoute)
+app.use('/login', webAdminRoute)
 app.use('/dashboard', webDashboardRoute)
 app.use('/settings', webSettingsRoute)
 // api

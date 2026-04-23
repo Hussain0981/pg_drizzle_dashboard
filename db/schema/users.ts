@@ -14,7 +14,7 @@ import {
 export const userRole = pgEnum("user_role", ["Admin", "User"]);
 
 export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(), // ✅ uuid
+  id: uuid("id").primaryKey().defaultRandom(), 
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email").notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
@@ -26,7 +26,7 @@ export const users = pgTable("users", {
 
 export const usersOtp = pgTable("users_otp", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")                       // ✅ integer → uuid
+  userId: uuid("user_id")
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" })
     .notNull(),
   hashedOtp: varchar("hashed_otp", { length: 255 }).notNull(),
@@ -40,9 +40,21 @@ export const usersOtp = pgTable("users_otp", {
   index("otp_user_id_idx").on(table.userId),
 ]);
 
+export const userSessions = pgTable('user_sessions', {
+  id:           uuid('id').primaryKey().defaultRandom(),
+  userId:       integer('user_id').references(() => users.id),
+  sessionToken: varchar('session_token', { length: 255 }).notNull(),
+  ipAddress:    varchar('ip_address', { length: 45 }),
+  userAgent:    varchar('user_agent'),
+  expiresAt:    timestamp('expires_at').notNull(),
+  createdAt:    timestamp('created_at').defaultNow(),
+});
+
 export const userRelationWithOTP = relations(usersOtp, ({ one }) => ({
   user: one(users, {
     fields: [usersOtp.userId],
     references: [users.id],
   }),
 }));
+
+export type User = typeof users.$inferSelect;

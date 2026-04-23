@@ -8,7 +8,11 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "outDir": "./public/js",
-    "rootDir": "./public/ts"
+    "rootDir": "./public/ts",
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
   },
   "include": ["public/ts/**/*"]
 }

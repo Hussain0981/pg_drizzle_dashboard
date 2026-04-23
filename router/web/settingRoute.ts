@@ -5,15 +5,15 @@ import { getAllService as getMainMenuService } from "../../service/adminMenuServ
 const mainMenuData = await getMainMenuService();
 const router = express.Router();
 
-// GET - Settings page with menu data
+// GET - /setting
 router.get('/', async (req: Request, res: Response) => {
   try {
     // Fetch menu data
     const subMenuData = await getSubMenuService();
     
-    res.render('admin/settings', {
+    res.render('pages/settings', {
       layout: 'layouts/index', 
-      title: 'Settings',
+      pageTitle: 'Settings',
       mainMenu: mainMenuData || [],
       subMenu: subMenuData || []
     });
@@ -21,7 +21,7 @@ router.get('/', async (req: Request, res: Response) => {
     console.error('Error fetching menu data:', error);
     res.status(500).render('admin/settings', {
       layout: 'layouts/index',
-      title: 'Settings - Error',
+      pageTitle: 'Settings - Error',
       mainMenu: [],
       subMenu: [],
       error: 'Failed to load menu data'
@@ -31,9 +31,9 @@ router.get('/', async (req: Request, res: Response) => {
 
 // GET - Add main menu form (No data needed)
 router.get('/add-main-menu', (req: Request, res: Response) => {
-  res.render('admin/mainMenu', {
+  res.render('pages/mainMenu', {
     layout: 'layouts/index', 
-    title: 'Add Main Menu'
+    pageTitle: 'Add Main Menu'
   });
 });
 
@@ -42,16 +42,16 @@ router.get('/add-sub-menu', async (req: Request, res: Response) => {
   console.log(mainMenuData)
   try {
     // Fetch main menu data for the dropdown
-    res.render('admin/subMenu', {
+    res.render('pages/subMenu', {
       layout: 'layouts/index', 
-      title: 'Add Sub Menu',
+      pageTitle: 'Add Sub Menu',
       mainMenu: mainMenuData || []
     });
   } catch (error) {
     console.error('Error fetching main menu for sub menu form:', error);
     res.render('admin/subMenu', {
       layout: 'layouts/index', 
-      title: 'Add Sub Menu',
+      pageTitle: 'Add Sub Menu',
       mainMenu: []
     });
   }

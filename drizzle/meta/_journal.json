@@ -15,6 +15,13 @@
       "when": 1776562853888,
       "tag": "0001_open_carlie_cooper",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776741349019,
+      "tag": "0002_peaceful_next_avengers",
+      "breakpoints": true
     }
   ]
 }
