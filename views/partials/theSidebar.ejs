@@ -27,10 +27,10 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 px-3 py-4 overflow-y-auto">
+    <nav class="flex-1 px-3 py-4 overflow-y-auto ">
 
-        <% if (mainMenu && mainMenu.data && mainMenu.data.length > 0) { %>
-            <% mainMenu.data.forEach(function(menu) { %>
+        <% if (menuItems && menuItems.data && menuItems.data.length > 0) { %>
+            <% menuItems.data.forEach(function(menu) { %>
 
                 <!-- Section Label -->
                 <p class="text-slate-500 text-xs font-medium uppercase tracking-wider px-2 mb-2 mt-3">
@@ -42,7 +42,7 @@
                     <% menu.subMenus.forEach(function(sub) { %>
 
                         <!-- Item Row -->
-                        <div class="group flex items-center gap-1 rounded-lg mb-1 px-2 py-1.5
+                        <div class="group flex items-center gap-1 rounded-lg mb-1 px-2 py-1.5 capitalize
                             <%= currentPath === (sub.url || sub.path) ? 'bg-slate-800' : 'hover:bg-slate-800/60' %>
                             transition-colors duration-150">
 

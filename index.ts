@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { initSuperAdmin } from './utils/initAmin'
+// import { initSuperAdmin } from './utils/initAmin'
 import expressLayouts from 'express-ejs-layouts';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
@@ -13,6 +13,7 @@ import { layoutDataMiddleware } from './middlewares/layoutDataMiddleware';
 import webAdminRoute from './router/web/adminRoute'
 import webDashboardRoute from './router/web/dashboardRoute'
 import webSettingsRoute from './router/web/settingRoute'
+import webPrcRoute from './router/web/prc'
 
 // api routes import 
 import apiAdminRoute from './router/api/adminLoginRoute'
@@ -71,6 +72,7 @@ app.use((req, res, next) => {
 app.use('/login', webAdminRoute)
 app.use('/dashboard', webDashboardRoute)
 app.use('/settings', webSettingsRoute)
+app.use('/prc', webPrcRoute)
 // api
 app.use('/api/v1/admin', apiAdminRoute)
 app.use('/api/v1/sub-menu', apiAdminSubmenuSettings)
@@ -79,7 +81,7 @@ app.use('/api/v1/main-menu', apiAdminMenuSettings)
 // ============= START SERVER =============
 
 app.listen(PORT, async () => {
-    await initSuperAdmin()
+    // await initSuperAdmin()
     console.log(` Server is running on http://localhost:${PORT}`);
 });
 

@@ -1,6 +1,6 @@
-// middlewares/layoutDataMiddleware.ts
+
 import { Request, Response, NextFunction } from 'express';
-import { getAllService } from '../service/adminSubmenuService'; // apna path check karo
+import { getAllService } from '../service/adminSubmenuService'; 
 
 export const layoutDataMiddleware = async (
   req: Request,
@@ -9,9 +9,7 @@ export const layoutDataMiddleware = async (
 ): Promise<void> => {
   try {
     const data = await getAllService();
-
-    // ✅ EJS mein "mainMenu" naam se access hoga
-    res.locals.mainMenu = { data };
+    res.locals.menuItems  = { data };
 
     res.locals.user = {
       name:  req.session?.name  || '',
@@ -21,8 +19,7 @@ export const layoutDataMiddleware = async (
 
   } catch (error) {
     console.error('Layout middleware error:', error);
-    // ✅ Error pe bhi locals set karo — warna EJS crash karega
-    res.locals.mainMenu = { data: [] };
+    res.locals.menuItem = { data: [] };
     res.locals.user = {};
   }
 

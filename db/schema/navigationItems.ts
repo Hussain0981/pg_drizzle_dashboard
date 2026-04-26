@@ -1,6 +1,13 @@
 import { pgTable, serial, varchar, integer, boolean, timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
+export const appHeaders = pgTable('headers', {
+    id: serial('id').primaryKey(),
+    appName: varchar('app_name', { length: 255 }).default('Codeex solutions'),
+    appDescription: varchar('app_description', {length: 255}).default('Pharmacy Management System'),
+    appIcon: varchar('app_icon', {length: 255}).notNull()
+})
+
 // Main menu table
 export const mainMenu = pgTable('main_menu', {
     id: serial('id').primaryKey(),

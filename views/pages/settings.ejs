@@ -76,22 +76,25 @@
                                             <%= menu.subMenus ? menu.subMenus.length : 0 %> items
                                         </span>
                                     </td>
+                                    <!-- FIX MAIN MENU TOGGLE BUTTON -->
                                     <td class="px-4 py-3">
-                                        <!-- Toggle Active/Inactive -->
-                                        <button
-                                            onclick="toggleMainMenu('<%= menu.id %>', <%= menu.isActive ? 'true' : 'false' %>)"
+                                        <button id="toggle-btn-main-<%= menu.id %>"
+                                            onclick="toggleMainMenu('<%= menu.id %>', <%= menu.isActive %>)"
                                             title="<%= menu.isActive ? 'Active' : 'Inactive' %>">
-                                            <% if (menu.isActive) { %>
-                                                <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                                                    <rect width="36" height="20" rx="10" fill="#10b981" />
-                                                    <circle cx="26" cy="10" r="7" fill="white" />
-                                                </svg>
-                                                <% } else { %>
+
+                                            <span id="toggle-icon-main-<%= menu.id %>">
+                                                <% if (menu.isActive) { %>
                                                     <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                                                        <rect width="36" height="20" rx="10" fill="#cbd5e1" />
-                                                        <circle cx="10" cy="10" r="7" fill="white" />
+                                                        <rect width="36" height="20" rx="10" fill="#10b981" />
+                                                        <circle cx="26" cy="10" r="7" fill="white" />
                                                     </svg>
-                                                    <% } %>
+                                                    <% } else { %>
+                                                        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+                                                            <rect width="36" height="20" rx="10" fill="#cbd5e1" />
+                                                            <circle cx="10" cy="10" r="7" fill="white" />
+                                                        </svg>
+                                                        <% } %>
+                                            </span>
                                         </button>
                                     </td>
                                     <td class="px-4 py-3">
@@ -202,22 +205,27 @@
                                             <td class="px-4 py-3 text-slate-500">
                                                 <%= sub.orderBy || '-' %>
                                             </td>
+                                            <!-- FIX SUB MENU TOGGLE BUTTON -->
                                             <td class="px-4 py-3">
-                                                <!-- Toggle -->
-                                                <button
-                                                    onclick="toggleSubMenu('<%= sub.id %>', <%= sub.isActive ? 'true' : 'false' %>)"
+                                                <button id="toggle-btn-sub-<%= sub.id %>"
+                                                    onclick="toggleSubMenu('<%= sub.id %>', <%= sub.isActive %>)"
                                                     title="<%= sub.isActive ? 'Active' : 'Inactive' %>">
-                                                    <% if (sub.isActive) { %>
-                                                        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                                                            <rect width="36" height="20" rx="10" fill="#10b981" />
-                                                            <circle cx="26" cy="10" r="7" fill="white" />
-                                                        </svg>
-                                                        <% } else { %>
+
+                                                    <span id="toggle-icon-sub-<%= sub.id %>">
+                                                        <% if (sub.isActive) { %>
                                                             <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                                                                <rect width="36" height="20" rx="10" fill="#cbd5e1" />
-                                                                <circle cx="10" cy="10" r="7" fill="white" />
+                                                                <rect width="36" height="20" rx="10" fill="#10b981" />
+                                                                <circle cx="26" cy="10" r="7" fill="white" />
                                                             </svg>
-                                                            <% } %>
+                                                            <% } else { %>
+                                                                <svg width="36" height="20" viewBox="0 0 36 20"
+                                                                    fill="none">
+                                                                    <rect width="36" height="20" rx="10"
+                                                                        fill="#cbd5e1" />
+                                                                    <circle cx="10" cy="10" r="7" fill="white" />
+                                                                </svg>
+                                                                <% } %>
+                                                    </span>
                                                 </button>
                                             </td>
                                             <td class="px-4 py-3">
@@ -269,72 +277,128 @@
     </div>
 
     <script>
-        // ── Navigation ──
-        document.getElementById('mainMenuButton').addEventListener('click', () => {
-            window.location.href = '/settings/add-main-menu';
-        });
-        document.getElementById('subMenuButton').addEventListener('click', () => {
-            window.location.href = '/settings/add-sub-menu';
+        /* =========================
+           NAVIGATION
+        ========================= */
+        document.getElementById("mainMenuButton")?.addEventListener("click", () => {
+            location.href = "/settings/add-main-menu";
         });
 
-        // ── Main Menu Toggle ──
+        document.getElementById("subMenuButton")?.addEventListener("click", () => {
+            location.href = "/settings/add-sub-menu";
+        });
+
+
+        /* =========================
+           UNIVERSAL TOGGLE HANDLER
+        ========================= */
+        async function handleToggle(type, id, currentStatus) {
+            const icon = document.getElementById(`toggle-icon-${type}-${id}`);
+            const button = document.getElementById(`toggle-btn-${type}-${id}`);
+
+            if (!icon || !button) return;
+
+            const newStatus = !currentStatus;
+
+            // optimistic UI update
+            renderToggle(icon, button, newStatus);
+
+            try {
+                const res = await fetch(`/api/v1/${type === 'main' ? 'main-menu' : 'sub-menu'}/${id}/toggle`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id })
+                });
+
+                const data = await res.json();
+
+                if (!data.success) {
+                    renderToggle(icon, button, currentStatus);
+                    alert("Update failed");
+                    return;
+                }
+
+                button.setAttribute(
+                    "onclick",
+                    type === "main"
+                        ? `toggleMainMenu('${id}', ${newStatus})`
+                        : `toggleSubMenu('${id}', ${newStatus})`
+                );
+
+            } catch (error) {
+                renderToggle(icon, button, currentStatus);
+                alert("Something went wrong");
+            }
+        }
+
+
+        /* =========================
+           PUBLIC FUNCTIONS
+        ========================= */
         function toggleMainMenu(id, currentStatus) {
-            fetch(`/api/v1/main-menu/${id}/toggle`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isActive: !currentStatus })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) window.location.reload();
-                    else alert('Toggle failed: ' + data.message);
-                })
-                .catch(() => alert('Something went wrong'));
+            handleToggle("main", id, currentStatus);
         }
 
-        // ── Main Menu Delete ──
-        function deleteMainMenu(id, name) {
-            if (!confirm(`"${name}" delete karna chahte ho? Iske sare sub menus bhi delete ho jayenge.`)) return;
-            fetch(`/api/v1/main-menu/${id}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) window.location.reload();
-                    else alert('Delete failed: ' + data.message);
-                })
-                .catch(() => alert('Something went wrong'));
-        }
-
-        // ── Sub Menu Toggle ──
         function toggleSubMenu(id, currentStatus) {
-            fetch(`/api/v1/sub-menu/${id}/toggle`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isActive: !currentStatus })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) window.location.reload();
-                    else alert('Toggle failed: ' + data.message);
-                })
-                .catch(() => alert('Something went wrong'));
+            handleToggle("sub", id, currentStatus);
         }
 
-        // ── Sub Menu Delete ──
-        function deleteSubMenu(id, name) {
+
+        /* =========================
+           TOGGLE UI RENDER
+        ========================= */
+        function renderToggle(icon, button, status) {
+            button.title = status ? "Active" : "Inactive";
+
+            icon.innerHTML = status
+                ? `
+        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+            <rect width="36" height="20" rx="10" fill="#10b981"/>
+            <circle cx="26" cy="10" r="7" fill="white"/>
+        </svg>
+    `
+                : `
+        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+            <rect width="36" height="20" rx="10" fill="#cbd5e1"/>
+            <circle cx="10" cy="10" r="7" fill="white"/>
+        </svg>
+    `;
+        }
+
+
+        /* =========================
+           DELETE FUNCTIONS
+        ========================= */
+        async function deleteMainMenu(id, name) {
+            if (!confirm(`"${name}" delete karna chahte ho? Iske sub menus bhi delete ho jayenge.`)) return;
+
+            await deleteItem(`/api/v1/main-menu/${id}`);
+        }
+
+        async function deleteSubMenu(id, name) {
             if (!confirm(`"${name}" delete karna chahte ho?`)) return;
-            fetch(`/api/v1/sub-menu/${id}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) window.location.reload();
-                    else alert('Delete failed: ' + data.message);
-                })
-                .catch(() => alert('Something went wrong'));
+
+            await deleteItem(`/api/v1/sub-menu/${id}`);
+        }
+
+        async function deleteItem(url) {
+            try {
+                const res = await fetch(url, {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || "Delete failed");
+                }
+
+            } catch (error) {
+                alert("Something went wrong");
+            }
         }
     </script>
 </body>

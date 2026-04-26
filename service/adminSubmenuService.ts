@@ -6,7 +6,7 @@ interface SubMenuItem {
     title: string;
     icon: string;
     orderBy: number;
-    parent_id: number;  
+    parent_id: number;
     path: string;
     isActive?: boolean;
     requiresAuth?: boolean;
@@ -40,7 +40,7 @@ export const addService = async (payload: SubMenuItem) => {
             title,
             path,
             icon: icon ?? null,
-            mainMenuId : parent_id,
+            mainMenuId: parent_id,
         })
         .returning();
 
@@ -127,4 +127,27 @@ export const getByIdService = async (id: number) => {
     }
 
     return item;
+};
+
+// ── toggle submenu active status
+export const toggleControllerService = async (id: number) => {
+    const item = await db.query.subMenu.findFirst({
+        where: eq(subMenu.id, id),
+    });
+
+    if (!item) {
+        throw new Error("Menu item not found");
+    }
+
+    await db
+        .update(subMenu)
+        .set({
+            isActive: !item.isActive,
+        })
+        .where(eq(subMenu.id, id));
+
+    return {
+        ...item,
+        isActive: !item.isActive,
+    };
 };

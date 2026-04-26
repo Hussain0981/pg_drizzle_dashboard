@@ -203,6 +203,7 @@ export const getSimpleAllService = async () => {
 
 // ── Get Single Main Menu by ID
 export const getByIdService = async (id: number) => {
+    console.log('id type' ,typeof id)
     try {
         // Get main menu
         const item = await db.query.mainMenu.findFirst({
