@@ -67,3 +67,15 @@ export const getById = async (req: Request, res: Response) => {
         failureResponse(res, errorMessage);
     }
 };
+// toggle by id
+export const toggleSubMenu = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.body
+        const user = await service.toggleSubMenu(id);
+        successResponse(res, user, 'menu fetch by id');
+
+    } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : 'Failed to fetch menu by id';
+        failureResponse(res, errorMessage);
+    }
+};

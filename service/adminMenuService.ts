@@ -280,3 +280,23 @@ export const reorderService = async (items: { id: number; orderBy: number }[]) =
         data: results
     };
 };
+// ── toggle Main Menus
+export const toggleSubMenu = async (id: number) => {
+    
+    const item = await db.query.mainMenu.findFirst({
+        where: eq(mainMenu.id, id)
+    })
+
+    if(!item){
+        throw new Error('Main menu is not found')
+    }
+
+    await db
+    .update(mainMenu)
+    .set({
+        isActive: !item?.isActive 
+    })
+    return {
+        data: item
+    }
+};

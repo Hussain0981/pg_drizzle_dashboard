@@ -1,14 +1,14 @@
 import type { Response, Request } from "express";
 import express from 'express'
-import { getAllService as getSubMenuService } from "../../service/adminSubmenuService";
-import { getAllService as getMainMenuService, getByIdService } from "../../service/adminMenuService";
+import { getAllService as getSubMenuService, getByIdService as getByIdSubMenu } from "../../service/adminSubmenuService";
+import { getAllService as getMainMenuService, getByIdService as getByIdMainMenu } from "../../service/adminMenuService";
 
 const router = express.Router();
 
 // GET - /settings
 router.get('/', async (req: Request, res: Response) => {
   try {
-    // ✅ Har request pe fresh data
+    // Har request pe fresh data
     const mainMenuData = await getMainMenuService();
     const subMenuData = await getSubMenuService();
 
@@ -40,7 +40,7 @@ router.get('/add-main-menu', (req: Request, res: Response) => {
 // GET - Add sub menu form
 router.get('/add-sub-menu', async (req: Request, res: Response) => {
   try {
-    // ✅ Fresh data har baar
+    // Fresh data har baar
     const mainMenuData = await getMainMenuService();
 
     res.render('pages/subMenu', {
@@ -61,7 +61,7 @@ router.get('/add-sub-menu', async (req: Request, res: Response) => {
 // GET - Edit sub menu
 router.get('/edit-sub-menu/:id', async (req: Request, res: Response) => {
   try {
-    // ✅ NaN check
+    // NaN check
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       res.status(400).send('Invalid ID');
@@ -69,12 +69,13 @@ router.get('/edit-sub-menu/:id', async (req: Request, res: Response) => {
     }
 
     const mainMenuData = await getMainMenuService();
+    const record = await getByIdSubMenu(id)
 
     res.render('pages/editSubMenu', {
       layout: 'layouts/index',
       pageTitle: 'Edit Sub Menu',
       mainMenu: mainMenuData || [],
-      editId: id
+      editId: record
     });
   } catch (error) {
     console.error('Error fetching sub menu:', error);
@@ -85,17 +86,17 @@ router.get('/edit-sub-menu/:id', async (req: Request, res: Response) => {
 // GET - Edit main menu
 router.get('/edit-main-menu/:id', async (req: Request, res: Response) => {
   try {
-    // ✅ parseInt aur NaN check try ke andar
+    // parseInt aur NaN check try ke andar
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       res.status(400).send('Invalid ID');
       return;
     }
 
-    // ✅ getByIdService try ke andar
+    // getByIdService
     const [mainMenuData, idData] = await Promise.all([
       getMainMenuService(),
-      getByIdService(id)
+      getByIdMainMenu(id)
     ]);
 
     if (!idData) {
