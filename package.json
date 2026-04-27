@@ -32,6 +32,7 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.2.2",
     "bcrypt": "^6.0.0",
+    "connect-flash": "^0.1.1",
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -49,6 +50,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/bcrypt": "^5.0.2",
+    "@types/connect-flash": "^0.0.40",
     "@types/connect-pg-simple": "^7.0.3",
     "@types/cookie-parser": "^1.4.6",
     "@types/ejs": "^3.1.5",

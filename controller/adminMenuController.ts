@@ -36,6 +36,7 @@ export const deleteController = async (req: Request, res: Response) => {
 export const updateController = async (req: Request, res: Response) => {
     try {
         const {id, ...payload} = req.body
+        console.log(req.body)
         const user = await service.updateService(id, payload);
         successResponse(res, user, 'menu updated successfully');
 

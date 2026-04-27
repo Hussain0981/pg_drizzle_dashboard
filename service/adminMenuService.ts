@@ -94,10 +94,13 @@ export const deleteService = async (id: number) => {
 
 // ── Update Main Menu
 export const updateService = async (id: number, payload: Partial<MainMenuItem>) => {
+    console.log(id, payload)
     // Check if exists
     const item = await db.query.mainMenu.findFirst({
         where: eq(mainMenu.id, id),
     });
+
+
 
     if (!item) {
         throw new Error('Main menu item not found');

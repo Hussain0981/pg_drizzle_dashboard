@@ -7,6 +7,7 @@ import expressLayouts from 'express-ejs-layouts';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { layoutDataMiddleware } from './middlewares/layoutDataMiddleware';
+import flash from 'connect-flash'
 
 
 // web routes import 
@@ -56,6 +57,22 @@ app.use(layoutDataMiddleware);
 
 // app.use(isAuthenticated)
 
+// flash
+app.use(session({
+  secret: ENV.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(flash());
+
+// available in every template
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error   = req.flash('error');
+  res.locals.info    = req.flash('info');
+  next();
+});
 
 // View engine setup
 app.use(expressLayouts);

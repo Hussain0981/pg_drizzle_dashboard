@@ -4,35 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= settings || 'Settings' %>
-    </title>
+    <title>Sub Menu</title>
     <link href="/css/output.css" rel="stylesheet">
 </head>
 
 <body>
-        <!-- views/pages/settings.ejs -->
-    <div class="space-y-6">
-        
-        <!-- ── Main Menu Card ── -->
+        <!-- ── Sub Menu Card ── -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h2 class="text-lg font-medium text-slate-800">Navigation Settings</h2>
-                    <p class="text-sm text-slate-400 mt-1">Manage navigation links</p>
+                    <h2 class="text-lg font-medium text-slate-800 capitalize">
+                        <%= data.data.title %>
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Manage sidebar sub menu navigation links</p>
                 </div>
-                <button id="mainMenuButton"
+                <button id="subMenuButton"
                     class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M12 5v14M5 12h14" />
                     </svg>
-                    Add Main Menu
+                    Add Sub Menu
                 </button>
             </div>
 
-            <!-- Main Menu Table -->
-            <% if (mainMenu && mainMenu.data && mainMenu.data.length> 0) { %>
-                <div class="overflow-hidden border border-slate-200 rounded-lg">
+            <!-- Sub Menu Table — grouped by main menu -->
+            <% if (data && data.data && data.data.subMenus && data.data.subMenus.length> 0) { %>
+
+                <div class="overflow-hidden border border-slate-200 rounded-lg mb-4">
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200">
@@ -44,10 +42,10 @@
                                     Name</th>
                                 <th
                                     class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Order</th>
+                                    URL / Path</th>
                                 <th
                                     class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Sub Menus</th>
+                                    Order</th>
                                 <th
                                     class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
                                     Status</th>
@@ -57,33 +55,34 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            <% mainMenu.data.forEach(function(menu, index) { %>
+
+                            <% data.data.subMenus.forEach(function(sub, index) { %>
                                 <tr class="hover:bg-slate-50 transition-colors">
+
                                     <td class="px-4 py-3 text-slate-400">
                                         <%= index + 1 %>
                                     </td>
-                                    <td class="px-4 py-3 capitalize">
-                                        <span class="font-medium text-slate-700">
-                                            <%= menu.title || menu.name || 'Unnamed' %>
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-slate-500">
-                                        <%= menu.orderBy || '-' %>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                                            <%= menu.subMenus ? menu.subMenus.length : 0 %> items
-                                        </span>
-                                    </td>
-                                    <!-- FIX MAIN MENU TOGGLE BUTTON -->
-                                    <td class="px-4 py-3">
-                                        <button id="toggle-btn-main-<%= menu.id %>"
-                                            onclick="toggleMainMenu('<%= menu.id %>', <%= menu.isActive %>)"
-                                            title="<%= menu.isActive ? 'Active' : 'Inactive' %>">
 
-                                            <span id="toggle-icon-main-<%= menu.id %>">
-                                                <% if (menu.isActive) { %>
+                                    <td class="px-4 py-3 font-medium text-slate-700">
+                                        <%= sub.title || 'Unnamed' %>
+                                    </td>
+
+                                    <td class="px-4 py-3">
+                                        <code class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+                <%= sub.path || '-' %>
+              </code>
+                                    </td>
+
+                                    <td class="px-4 py-3 text-slate-500">
+                                        <%= sub.orderBy || '-' %>
+                                    </td>
+
+                                    <td class="px-4 py-3">
+                                        <button id="toggle-btn-sub-<%= sub.id %>"
+                                            onclick="toggleSubMenu('<%= sub.id %>', <%= sub.isActive %>)"
+                                            title="<%= sub.isActive ? 'Active' : 'Inactive' %>">
+                                            <span id="toggle-icon-sub-<%= sub.id %>">
+                                                <% if (sub.isActive) { %>
                                                     <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
                                                         <rect width="36" height="20" rx="10" fill="#10b981" />
                                                         <circle cx="26" cy="10" r="7" fill="white" />
@@ -97,60 +96,39 @@
                                             </span>
                                         </button>
                                     </td>
+
                                     <td class="px-4 py-3">
                                         <div class="flex items-center justify-end gap-2">
-                                            <!-- views -->
-                                             <button
-                                                onclick="window.location.href='/settings/navigation/<%= menu.id %>'"
-                                                class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-green-600 hover:border-green-200 hover:bg-green-50 transition-colors"
-                                                title="Edit">
-                                                <span class="iconify" data-icon="ic:outline-remove-red-eye" data-width="18" data-height="18"></span>
-
-                                            </button>
-                                            <!-- Edit -->
                                             <button
-                                                onclick="window.location.href='/settings/edit-main-menu/<%= menu.id %>'"
+                                                onclick="window.location.href='/settings/edit-sub-menu/<%= sub.id %>'"
                                                 class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
                                                 title="Edit">
                                                 <span class="iconify" data-icon="material-symbols:ink-pen" data-width="18" data-height="18"></span>
-
+                                                
                                             </button>
-                                            <!-- Delete -->
-                                            <button
-                                                onclick="deleteMainMenu('<%= menu.id %>', '<%= menu.title || menu.name %>')"
+                                            <button onclick="deleteSubMenu('<%= sub.id %>', '<%= sub.title %>')"
                                                 class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
                                                 title="Delete">
                                                 <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="18" data-height="18"></span>
-
                                             </button>
                                         </div>
                                     </td>
+
                                 </tr>
                                 <% }); %>
+
                         </tbody>
                     </table>
                 </div>
+
                 <% } else { %>
                     <div
                         class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
-                        No main menus found. Click "Add Main Menu" to create one.
+                        No sub menus found. Click "Add Sub Menu" to create one.
                     </div>
                     <% } %>
-        </div>
-    </div>
 
-    <script>
-        /* =========================
-           NAVIGATION
-        ========================= */
-        document.getElementById("mainMenuButton")?.addEventListener("click", () => {
-            location.href = "/settings/add-main-menu";
-        });
-
-        document.getElementById("subMenuButton")?.addEventListener("click", () => {
-            location.href = "/settings/add-sub-menu";
-        });
-
+                    <script>
 
         /* =========================
            UNIVERSAL TOGGLE HANDLER
@@ -167,7 +145,7 @@
             renderToggle(icon, button, newStatus);
 
             try {
-                const res = await fetch(`/api/v1/${type === 'main' ? 'main-menu' : 'sub-menu'}/${id}/toggle`, {
+                const res = await fetch(`/api/v1/sub-menu/${id}/toggle`, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id })
@@ -190,14 +168,6 @@
                 renderToggle(icon, button, currentStatus);
                 alert("Something went wrong");
             }
-        }
-
-
-        /* =========================
-           PUBLIC FUNCTIONS
-        ========================= */
-        function toggleMainMenu(id, currentStatus) {
-            handleToggle("main", id, currentStatus);
         }
 
         function toggleSubMenu(id, currentStatus) {
@@ -231,13 +201,13 @@
            DELETE FUNCTIONS
         ========================= */
         async function deleteMainMenu(id, name) {
-            if (!confirm(`"${name}" delete karna chahte ho? Iske sub menus bhi delete ho jayenge.`)) return;
+            if (!confirm(`"${name}" sub menus will be delete`)) return;
 
             await deleteItem(`/api/v1/main-menu/${id}`);
         }
 
         async function deleteSubMenu(id, name) {
-            if (!confirm(`"${name}" delete karna chahte ho?`)) return;
+            if (!confirm(`"${name}" `)) return;
 
             await deleteItem(`/api/v1/sub-menu/${id}`);
         }

@@ -1,7 +1,8 @@
 import type { Response, Request } from "express";
 import express from 'express'
-import { getAllService as getSubMenuService, getByIdService as getByIdSubMenu } from "../../service/adminSubmenuService";
-import { getAllService as getMainMenuService, getByIdService as getByIdMainMenu } from "../../service/adminMenuService";
+import { getByIdService, getAllService as getMainMenuService, getByIdService as getByIdMainMenu } from "../../service/adminMenuService";
+import { getByIdService as getByIdSubMenu } from "../../service/adminSubmenuService";
+import { error } from "console";
 
 const router = express.Router();
 
@@ -10,21 +11,16 @@ router.get('/', async (req: Request, res: Response) => {
   try {
     // Har request pe fresh data
     const mainMenuData = await getMainMenuService();
-    const subMenuData = await getSubMenuService();
-
     res.render('pages/settings', {
       layout: 'layouts/index',
       pageTitle: 'Settings',
-      mainMenu: mainMenuData || [],
-      subMenu: subMenuData || []
-    });
+      mainMenu: mainMenuData || [],    });
   } catch (error) {
     console.error('Error fetching menu data:', error);
     res.status(500).render('pages/settings', {
       layout: 'layouts/index',
       pageTitle: 'Settings - Error',
       mainMenu: [],
-      subMenu: []
     });
   }
 });
@@ -35,6 +31,7 @@ router.get('/add-main-menu', (req: Request, res: Response) => {
     layout: 'layouts/index',
     pageTitle: 'Add Main Menu'
   });
+  req.flash('success', 'added successfully');
 });
 
 // GET - Add sub menu form
@@ -113,6 +110,40 @@ router.get('/edit-main-menu/:id', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error fetching main menu by id:', error);
     res.status(500).send('Something went wrong');
+  }
+});
+
+// GET - edit navigation
+router.get('/navigation/:id', async (req: Request, res: Response) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    if (isNaN(userId)) {
+      req.flash('error', 'Please pass correct menu id');
+      return res.redirect('back');
+    }
+
+    const [mainMenuData, data] = await Promise.all([
+      getMainMenuService(),
+      getByIdService(userId)
+    ]);
+
+    res.render('pages/navigation', {
+      layout: 'layouts/index',
+      pageTitle: 'Navigation Setting',
+      mainMenu: mainMenuData || [],
+      data,
+    });
+
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error fetching navigation:', message);
+
+    res.status(500).render('pages/error', {
+      layout: 'layouts/index',
+      pageTitle: 'Something went wrong',
+      mainMenu: []
+    });
   }
 });
 
