@@ -2,7 +2,8 @@ import type { Response, Request } from "express";
 import express from 'express'
 import { getByIdService, getAllService as getMainMenuService, getByIdService as getByIdMainMenu } from "../../service/adminMenuService";
 import { getByIdService as getByIdSubMenu } from "../../service/adminSubmenuService";
-import { error } from "console";
+import { toggleMenu } from '../../helper/toggleMenu'
+import { deleteItem } from '../../helper/deleteItem'
 
 const router = express.Router();
 
@@ -14,7 +15,10 @@ router.get('/', async (req: Request, res: Response) => {
     res.render('pages/settings', {
       layout: 'layouts/index',
       pageTitle: 'Settings',
-      mainMenu: mainMenuData || [],    });
+      mainMenu: mainMenuData || [], 
+      toggle: toggleMenu,
+      delete: deleteItem,   
+    });
   } catch (error) {
     console.error('Error fetching menu data:', error);
     res.status(500).render('pages/settings', {
@@ -43,7 +47,8 @@ router.get('/add-sub-menu', async (req: Request, res: Response) => {
     res.render('pages/subMenu', {
       layout: 'layouts/index',
       pageTitle: 'Add Sub Menu',
-      mainMenu: mainMenuData || []
+      mainMenu: mainMenuData || [],
+      toggleFnc : toggleMenu
     });
   } catch (error) {
     console.error('Error fetching main menu:', error);
@@ -119,7 +124,6 @@ router.get('/navigation/:id', async (req: Request, res: Response) => {
     const userId = parseInt(req.params.id);
 
     if (isNaN(userId)) {
-      req.flash('error', 'Please pass correct menu id');
       return res.redirect('back');
     }
 
@@ -133,6 +137,8 @@ router.get('/navigation/:id', async (req: Request, res: Response) => {
       pageTitle: 'Navigation Setting',
       mainMenu: mainMenuData || [],
       data,
+      toggle: toggleMenu,
+      delete: deleteItem,
     });
 
   } catch (error: unknown) {

@@ -4,6 +4,7 @@
         "Codeex",
         "EAUTH",
         "ECONNECTION",
-        "EENVELOPE"
+        "EENVELOPE",
+        "iconify"
     ]
 }

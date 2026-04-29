@@ -23,8 +23,7 @@ export const addController = async (req: Request, res: Response) => {
 // delete
 export const deleteController = async (req: Request, res: Response) => {
     try {
-        const {id} = req.body
-        const user = await service.deleteService(id);
+        const user = await service.deleteService(req.body);
         successResponse(res, user, 'menu successfully deleted');
 
     } catch (e) {
@@ -35,8 +34,10 @@ export const deleteController = async (req: Request, res: Response) => {
 // update
 export const updateController = async (req: Request, res: Response) => {
     try {
-        const {id, ...payload} = req.body
-        console.log(req.body)
+        const { id, ...payload } = req.body
+        if (isNaN(id)) {
+            return res.status(400).json({ success: false, message: 'Invalid id' });
+        }
         const user = await service.updateService(id, payload);
         successResponse(res, user, 'menu updated successfully');
 

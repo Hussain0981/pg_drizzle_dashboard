@@ -16,7 +16,7 @@ interface MainMenuItem {
 export const addService = async (payload: MainMenuItem) => {
     const { title, path, orderBy = 0, isActive = true } = payload;
     console.log('h service', payload);
-    
+
 
     // Validate required fields
     if (!title || !path) {
@@ -43,9 +43,9 @@ export const addService = async (payload: MainMenuItem) => {
 
     // Insert
     const [menuItem] = await db.insert(mainMenu)
-        .values({ 
-            title, 
-            path, 
+        .values({
+            title,
+            path,
             orderBy,
             isActive,
             createdAt: new Date(),
@@ -91,51 +91,32 @@ export const deleteService = async (id: number) => {
         data: deletedItem
     };
 };
-
-// ── Update Main Menu
 export const updateService = async (id: number, payload: Partial<MainMenuItem>) => {
-    console.log(id, payload)
-    // Check if exists
+    const { title, orderBy, path } = payload.payload;
+    console.log(title, orderBy, path ) 
+
     const item = await db.query.mainMenu.findFirst({
         where: eq(mainMenu.id, id),
     });
-
-
 
     if (!item) {
         throw new Error('Main menu item not found');
     }
 
-    // Duplicate title check (excluding current item)
-    if (payload.title) {
-        const duplicate = await db.query.mainMenu.findFirst({
-            where: eq(mainMenu.title, payload.title),
-        });
-
-        if (duplicate && duplicate.id !== id) {
-            throw new Error('Title already exists');
-        }
-    }
-
-    // Duplicate path check (excluding current item)
-    if (payload.path) {
-        const duplicatePath = await db.query.mainMenu.findFirst({
-            where: eq(mainMenu.path, payload.path),
-        });
-
-        if (duplicatePath && duplicatePath.id !== id) {
-            throw new Error('Path already exists');
-        }
-    }
-
-    // Update
-    const [updatedItem] = await db.update(mainMenu)
+    // Update karo
+    await db.update(mainMenu)
         .set({
-            ...payload,
+            title,
+            orderBy,
+            path,
             updatedAt: new Date(),
         })
-        .where(eq(mainMenu.id, id))
-        .returning();
+        .where(eq(mainMenu.id, id));
+
+    // returning() nahi — alag se fetch karo
+    const updatedItem = await db.query.mainMenu.findFirst({
+        where: eq(mainMenu.id, id),
+    });
 
     return {
         success: true,
@@ -151,22 +132,22 @@ export const getAllService = async () => {
         const mainMenus = await db.select()
             .from(mainMenu)
             .orderBy(asc(mainMenu.orderBy));
-        
+
         // For each main menu, get its sub menus
         const result = [];
-        
+
         for (const menu of mainMenus) {
             const subMenus = await db.select()
                 .from(subMenu)
                 .where(eq(subMenu.mainMenuId, menu.id))
                 .orderBy(asc(subMenu.orderBy));
-            
+
             result.push({
                 ...menu,
                 subMenus: subMenus
             });
         }
-        
+
         return {
             success: true,
             count: result.length,
@@ -189,10 +170,10 @@ export const getSimpleAllService = async () => {
             orderBy: mainMenu.orderBy,
             isActive: mainMenu.isActive
         })
-        .from(mainMenu)
-        .where(eq(mainMenu.isActive, true))
-        .orderBy(asc(mainMenu.orderBy));
-        
+            .from(mainMenu)
+            .where(eq(mainMenu.isActive, true))
+            .orderBy(asc(mainMenu.orderBy));
+
         return {
             success: true,
             count: menus.length,
@@ -206,7 +187,7 @@ export const getSimpleAllService = async () => {
 
 // ── Get Single Main Menu by ID
 export const getByIdService = async (id: number) => {
-    console.log('id type' ,typeof id)
+    console.log('id type', typeof id)
     try {
         // Get main menu
         const item = await db.query.mainMenu.findFirst({
@@ -247,7 +228,7 @@ export const toggleStatusService = async (id: number) => {
     }
 
     const [updated] = await db.update(mainMenu)
-        .set({ 
+        .set({
             isActive: !item.isActive,
             updatedAt: new Date()
         })
@@ -264,19 +245,19 @@ export const toggleStatusService = async (id: number) => {
 // ── Reorder Main Menus
 export const reorderService = async (items: { id: number; orderBy: number }[]) => {
     const results = [];
-    
+
     for (const item of items) {
         const [updated] = await db.update(mainMenu)
-            .set({ 
-                orderBy: item.orderBy, 
-                updatedAt: new Date() 
+            .set({
+                orderBy: item.orderBy,
+                updatedAt: new Date()
             })
             .where(eq(mainMenu.id, item.id))
             .returning();
-        
+
         results.push(updated);
     }
-    
+
     return {
         success: true,
         message: 'Menu order updated successfully',
@@ -285,20 +266,20 @@ export const reorderService = async (items: { id: number; orderBy: number }[]) =
 };
 // ── toggle Main Menus
 export const toggleSubMenu = async (id: number) => {
-    
+
     const item = await db.query.mainMenu.findFirst({
         where: eq(mainMenu.id, id)
     })
 
-    if(!item){
+    if (!item) {
         throw new Error('Main menu is not found')
     }
 
     await db
-    .update(mainMenu)
-    .set({
-        isActive: !item?.isActive 
-    })
+        .update(mainMenu)
+        .set({
+            isActive: !item?.isActive
+        })
     return {
         data: item
     }

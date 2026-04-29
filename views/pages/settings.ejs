@@ -1,267 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= settings || 'Settings' %>
-    </title>
-    <link href="/css/output.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= settings || 'Settings' %></title>
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
 </head>
-
 <body>
-        <!-- views/pages/settings.ejs -->
-    <div class="space-y-6">
-        
-        <!-- ── Main Menu Card ── -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-lg font-medium text-slate-800">Navigation Settings</h2>
-                    <p class="text-sm text-slate-400 mt-1">Manage navigation links</p>
-                </div>
-                <button id="mainMenuButton"
-                    class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M12 5v14M5 12h14" />
-                    </svg>
-                    Add Main Menu
-                </button>
-            </div>
 
-            <!-- Main Menu Table -->
-            <% if (mainMenu && mainMenu.data && mainMenu.data.length> 0) { %>
-                <div class="overflow-hidden border border-slate-200 rounded-lg">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200">
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    #</th>
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Name</th>
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Order</th>
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Sub Menus</th>
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Status</th>
-                                <th
-                                    class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <% mainMenu.data.forEach(function(menu, index) { %>
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-4 py-3 text-slate-400">
-                                        <%= index + 1 %>
-                                    </td>
-                                    <td class="px-4 py-3 capitalize">
-                                        <span class="font-medium text-slate-700">
-                                            <%= menu.title || menu.name || 'Unnamed' %>
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-slate-500">
-                                        <%= menu.orderBy || '-' %>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                                            <%= menu.subMenus ? menu.subMenus.length : 0 %> items
-                                        </span>
-                                    </td>
-                                    <!-- FIX MAIN MENU TOGGLE BUTTON -->
-                                    <td class="px-4 py-3">
-                                        <button id="toggle-btn-main-<%= menu.id %>"
-                                            onclick="toggleMainMenu('<%= menu.id %>', <%= menu.isActive %>)"
-                                            title="<%= menu.isActive ? 'Active' : 'Inactive' %>">
+    <%# toggle() %>
+    <%# delete() %>
 
-                                            <span id="toggle-icon-main-<%= menu.id %>">
-                                                <% if (menu.isActive) { %>
-                                                    <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                                                        <rect width="36" height="20" rx="10" fill="#10b981" />
-                                                        <circle cx="26" cy="10" r="7" fill="white" />
-                                                    </svg>
-                                                    <% } else { %>
-                                                        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                                                            <rect width="36" height="20" rx="10" fill="#cbd5e1" />
-                                                            <circle cx="10" cy="10" r="7" fill="white" />
-                                                        </svg>
-                                                        <% } %>
-                                            </span>
-                                        </button>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <!-- views -->
-                                             <button
-                                                onclick="window.location.href='/settings/navigation/<%= menu.id %>'"
-                                                class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-green-600 hover:border-green-200 hover:bg-green-50 transition-colors"
-                                                title="Edit">
-                                                <span class="iconify" data-icon="ic:outline-remove-red-eye" data-width="18" data-height="18"></span>
+  <div class="space-y-6">
 
-                                            </button>
-                                            <!-- Edit -->
-                                            <button
-                                                onclick="window.location.href='/settings/edit-main-menu/<%= menu.id %>'"
-                                                class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
-                                                title="Edit">
-                                                <span class="iconify" data-icon="material-symbols:ink-pen" data-width="18" data-height="18"></span>
+    <!-- Main Menu Card -->
+    <div class="bg-white rounded-lg shadow p-6">
 
-                                            </button>
-                                            <!-- Delete -->
-                                            <button
-                                                onclick="deleteMainMenu('<%= menu.id %>', '<%= menu.title || menu.name %>')"
-                                                class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
-                                                title="Delete">
-                                                <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="18" data-height="18"></span>
-
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                        </tbody>
-                    </table>
-                </div>
-                <% } else { %>
-                    <div
-                        class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
-                        No main menus found. Click "Add Main Menu" to create one.
-                    </div>
-                    <% } %>
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-lg font-medium text-slate-800">Navigation Settings</h2>
+          <p class="text-sm text-slate-400 mt-1">Manage navigation links</p>
         </div>
+        <button id="mainMenuButton"
+          class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
+          <span class="iconify" data-icon="material-symbols:add" data-width="16" data-height="16"></span>
+          Add Main Menu
+        </button>
+      </div>
+
+      <!-- Table -->
+      <% if (mainMenu && mainMenu.data && mainMenu.data.length > 0) { %>
+        <div class="overflow-hidden border border-slate-200 rounded-lg">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200">
+                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">#</th>
+                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
+                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Order</th>
+                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Sub Menus</th>
+                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                <th class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+
+              <% mainMenu.data.forEach(function(menu, index) { %>
+
+                <!-- id="row-..." — delete ke baad row hatane ke liye zaruri -->
+                <tr id="row-<%= menu.id %>" class="hover:bg-slate-50 transition-colors">
+
+                  <!-- # -->
+                  <td class="px-4 py-3 text-slate-400"><%= index + 1 %></td>
+
+                  <!-- Name -->
+                  <td class="px-4 py-3 capitalize">
+                    <span class="font-medium text-slate-700"><%= menu.title %></span>
+                  </td>
+
+                  <!-- Order -->
+                  <td class="px-4 py-3 text-slate-500"><%= menu.orderBy || '-' %></td>
+
+                  <!-- Sub Menus Count -->
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                      <span class="iconify" data-icon="material-symbols:list" data-width="12" data-height="12"></span>
+                      <%= menu.subMenus ? menu.subMenus.length : 0 %> items
+                    </span>
+                  </td>
+
+                  <!-- Status Toggle -->
+                  <td class="px-4 py-3">
+                    <button
+                      id="toggle-btn-main-<%= menu.id %>"
+                      onclick="toggle('<%= menu.id %>', <%= menu.isActive %>)"                      title="<%= menu.isActive ? 'Active' : 'Inactive' %>">
+                      <span id="toggle-icon-main-<%= menu.id %>">
+                        <% if (menu.isActive) { %>
+                          <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+                            <rect width="36" height="20" rx="10" fill="#10b981"/>
+                            <circle cx="26" cy="10" r="7" fill="white"/>
+                          </svg>
+                        <% } else { %>
+                          <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+                            <rect width="36" height="20" rx="10" fill="#cbd5e1"/>
+                            <circle cx="10" cy="10" r="7" fill="white"/>
+                          </svg>
+                        <% } %>
+                      </span>
+                    </button>
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="px-4 py-3">
+                    <div class="flex items-center justify-end gap-2">
+
+                      <!-- View -->
+                      <button
+                        onclick="window.location.href='/settings/navigation/<%= menu.id %>'"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-green-600 hover:border-green-200 hover:bg-green-50 transition-colors"
+                        title="View">
+                        <span class="iconify" data-icon="ic:outline-remove-red-eye" data-width="16" data-height="16"></span>
+                      </button>
+
+                      <!-- Edit -->
+                      <button
+                        onclick="window.location.href='/settings/edit-main-menu/<%= menu.id %>'"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
+                        title="Edit">
+                        <span class="iconify" data-icon="material-symbols:ink-pen" data-width="16" data-height="16"></span>
+                      </button>
+
+                      <!-- Delete -->
+                      <button
+                        onclick="deleteItem(<%= menu.id %>, '<%= menu.title %>')"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
+                        title="Delete">
+                        <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="16" data-height="16"></span>
+                      </button>
+
+                    </div>
+                  </td>
+
+                </tr>
+              <% }); %>
+
+            </tbody>
+          </table>
+        </div>
+
+      <% } else { %>
+        <div class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
+          <span class="iconify mx-auto mb-2 block" data-icon="material-symbols:menu-open" data-width="28" data-height="28"></span>
+          No main menus found. Click "Add Main Menu" to create one.
+        </div>
+      <% } %>
+
     </div>
+  </div>
 
-    <script>
-        /* =========================
-           NAVIGATION
-        ========================= */
-        document.getElementById("mainMenuButton")?.addEventListener("click", () => {
-            location.href = "/settings/add-main-menu";
+  <script>
+    /* ── Add Main Menu Button ── */
+    document.getElementById('mainMenuButton')?.addEventListener('click', () => {
+      location.href = '/settings/add-main-menu';
+    });
+
+    /* ── Toggle Main Menu ── */
+    function toggleMainMenu(id, currentStatus) {
+      const icon   = document.getElementById(`toggle-icon-main-${id}`);
+      const button = document.getElementById(`toggle-btn-main-${id}`);
+      if (!icon || !button) return;
+
+      const newStatus = !currentStatus;
+      renderToggle(icon, button, newStatus); // optimistic UI
+
+      fetch(`/api/v1/main-menu/${id}/toggle`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) {
+            renderToggle(icon, button, currentStatus); // revert
+            return;
+          }
+          // Next click ke liye updated status pass karo
+          button.setAttribute('onclick', `toggleMainMenu('${id}', ${newStatus})`);
+        })
+        .catch(() => {
+          renderToggle(icon, button, currentStatus); // revert
+          alert('Something went wrong');
         });
+    }
 
-        document.getElementById("subMenuButton")?.addEventListener("click", () => {
-            location.href = "/settings/add-sub-menu";
+    /* ── Toggle UI Render ── */
+    function renderToggle(icon, button, status) {
+      button.title = status ? 'Active' : 'Inactive';
+      icon.innerHTML = status
+        ? `<svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+             <rect width="36" height="20" rx="10" fill="#10b981"/>
+             <circle cx="26" cy="10" r="7" fill="white"/>
+           </svg>`
+        : `<svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+             <rect width="36" height="20" rx="10" fill="#cbd5e1"/>
+             <circle cx="10" cy="10" r="7" fill="white"/>
+           </svg>`;
+    }
+
+    /* ── Delete ── */
+    async function deleteItem(id, name) {
+      if (!confirm(`"${name}" delete karna chahte ho?`)) return;
+
+      try {
+        const res  = await fetch(`/api/v1/main-menu/${id}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
         });
+        const data = await res.json();
 
-
-        /* =========================
-           UNIVERSAL TOGGLE HANDLER
-        ========================= */
-        async function handleToggle(type, id, currentStatus) {
-            const icon = document.getElementById(`toggle-icon-${type}-${id}`);
-            const button = document.getElementById(`toggle-btn-${type}-${id}`);
-
-            if (!icon || !button) return;
-
-            const newStatus = !currentStatus;
-
-            // optimistic UI update
-            renderToggle(icon, button, newStatus);
-
-            try {
-                const res = await fetch(`/api/v1/${type === 'main' ? 'main-menu' : 'sub-menu'}/${id}/toggle`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id })
-                });
-
-                const data = await res.json();
-
-                if (!data.success) {
-                    renderToggle(icon, button, currentStatus);
-                    return;
-                }
-                button.setAttribute(
-                    "onclick",
-                    type === "main"
-                        ? `toggleMainMenu('${id}', ${newStatus})`
-                        : `toggleSubMenu('${id}', ${newStatus})`
-                );
-
-            } catch (error) {
-                renderToggle(icon, button, currentStatus);
-                alert("Something went wrong");
-            }
+        if (data.success) {
+          const row = document.getElementById(`row-${id}`);
+          if (row) {
+            row.style.transition = 'opacity 0.3s';
+            row.style.opacity    = '0';
+            setTimeout(() => row.remove(), 300);
+          } else {
+            location.reload();
+          }
+        } else {
+          alert(data.message || 'Delete failed');
         }
 
-
-        /* =========================
-           PUBLIC FUNCTIONS
-        ========================= */
-        function toggleMainMenu(id, currentStatus) {
-            handleToggle("main", id, currentStatus);
-        }
-
-        function toggleSubMenu(id, currentStatus) {
-            handleToggle("sub", id, currentStatus);
-        }
-
-
-        /* =========================
-           TOGGLE UI RENDER
-        ========================= */
-        function renderToggle(icon, button, status) {
-            button.title = status ? "Active" : "Inactive";
-
-            icon.innerHTML = status
-                ? `
-        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-            <rect width="36" height="20" rx="10" fill="#10b981"/>
-            <circle cx="26" cy="10" r="7" fill="white"/>
-        </svg>
-    `
-                : `
-        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-            <rect width="36" height="20" rx="10" fill="#cbd5e1"/>
-            <circle cx="10" cy="10" r="7" fill="white"/>
-        </svg>
-    `;
-        }
-
-
-        /* =========================
-           DELETE FUNCTIONS
-        ========================= */
-        async function deleteMainMenu(id, name) {
-            if (!confirm(`"${name}" delete karna chahte ho? Iske sub menus bhi delete ho jayenge.`)) return;
-
-            await deleteItem(`/api/v1/main-menu/${id}`);
-        }
-
-        async function deleteSubMenu(id, name) {
-            if (!confirm(`"${name}" delete karna chahte ho?`)) return;
-
-            await deleteItem(`/api/v1/sub-menu/${id}`);
-        }
-
-        async function deleteItem(url) {
-            try {
-                const res = await fetch(url, {
-                    method: "DELETE",
-                    headers: { "Content-Type": "application/json" }
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert(data.message || "Delete failed");
-                }
-
-            } catch (error) {
-                alert("Something went wrong");
-            }
-        }
-    </script>
+      } catch {
+        alert('Something went wrong');
+      }
+    }
+  </script>
 </body>
-
 </html>

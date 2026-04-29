@@ -63,7 +63,7 @@
                                         <%= index + 1 %>
                                     </td>
 
-                                    <td class="px-4 py-3 font-medium text-slate-700">
+                                    <td class="px-4 py-3 font-medium text-slate-700 capitalize">
                                         <%= sub.title || 'Unnamed' %>
                                     </td>
 
@@ -106,7 +106,7 @@
                                                 <span class="iconify" data-icon="material-symbols:ink-pen" data-width="18" data-height="18"></span>
                                                 
                                             </button>
-                                            <button onclick="deleteSubMenu('<%= sub.id %>', '<%= sub.title %>')"
+                                            <button onclick="deleteSubMenu('<%= sub.id %>')"
                                                 class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
                                                 title="Delete">
                                                 <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="18" data-height="18"></span>
@@ -206,7 +206,8 @@
             await deleteItem(`/api/v1/main-menu/${id}`);
         }
 
-        async function deleteSubMenu(id, name) {
+        async function deleteSubMenu(id) {
+            console.log('delete id', id)
             if (!confirm(`"${name}" `)) return;
 
             await deleteItem(`/api/v1/sub-menu/${id}`);
