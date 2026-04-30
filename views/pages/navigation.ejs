@@ -9,230 +9,110 @@
 </head>
 
 <body>
-        <!-- ── Sub Menu Card ── -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-lg font-medium text-slate-800 capitalize">
-                        <%= data.data.title %>
-                    </h2>
-                    <p class="text-sm text-slate-400 mt-1">Manage sidebar sub menu navigation links</p>
-                </div>
-                <button id="subMenuButton"
-                    class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M12 5v14M5 12h14" />
-                    </svg>
-                    Add Sub Menu
-                </button>
+    <!-- ── Sub Menu Card ── -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-lg font-medium text-slate-800 capitalize">
+                    <%= data.data.title %>
+                </h2>
+                <p class="text-sm text-slate-400 mt-1">Manage sidebar sub menu navigation links</p>
             </div>
+            <button id="subMenuButton"
+                class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                Add Sub Menu
+            </button>
+        </div>
 
-            <!-- Sub Menu Table — grouped by main menu -->
-            <% if (data && data.data && data.data.subMenus && data.data.subMenus.length> 0) { %>
+        <!-- Sub Menu Table — grouped by main menu -->
+        <% if (data && data.data && data.data.subMenus && data.data.subMenus.length> 0) { %>
 
-                <div class="overflow-hidden border border-slate-200 rounded-lg mb-4">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200">
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    #</th>
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Name</th>
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    URL / Path</th>
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Order</th>
-                                <th
-                                    class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Status</th>
-                                <th
-                                    class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                    Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
+            <div class="overflow-hidden border border-slate-200 rounded-lg mb-4">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200">
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                #</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                Name</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                URL / Path</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                Order</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                Status</th>
+                            <th
+                                class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
 
-                            <% data.data.subMenus.forEach(function(sub, index) { %>
-                                <tr class="hover:bg-slate-50 transition-colors">
+                        <% data.data.subMenus.forEach(function(sub, index) { %>
+                            <tr class="hover:bg-slate-50 transition-colors">
 
-                                    <td class="px-4 py-3 text-slate-400">
-                                        <%= index + 1 %>
-                                    </td>
+                                <td class="px-4 py-3 text-slate-400">
+                                    <%= index + 1 %>
+                                </td>
 
-                                    <td class="px-4 py-3 font-medium text-slate-700 capitalize">
-                                        <%= sub.title || 'Unnamed' %>
-                                    </td>
+                                <td class="px-4 py-3 font-medium text-slate-700 capitalize">
+                                    <%= sub.title || 'Unnamed' %>
+                                </td>
 
-                                    <td class="px-4 py-3">
-                                        <code class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+                                <td class="px-4 py-3">
+                                    <code class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
                 <%= sub.path || '-' %>
               </code>
-                                    </td>
+                                </td>
 
-                                    <td class="px-4 py-3 text-slate-500">
-                                        <%= sub.orderBy || '-' %>
-                                    </td>
+                                <td class="px-4 py-3 text-slate-500">
+                                    <%= sub.orderBy || '-' %>
+                                </td>
 
-                                    <td class="px-4 py-3">
-                                        <button id="toggle-btn-sub-<%= sub.id %>"
-                                            onclick="toggleSubMenu('<%= sub.id %>', <%= sub.isActive %>)"
-                                            title="<%= sub.isActive ? 'Active' : 'Inactive' %>">
-                                            <span id="toggle-icon-sub-<%= sub.id %>">
-                                                <% if (sub.isActive) { %>
-                                                    <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                                                        <rect width="36" height="20" rx="10" fill="#10b981" />
-                                                        <circle cx="26" cy="10" r="7" fill="white" />
-                                                    </svg>
-                                                    <% } else { %>
-                                                        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                                                            <rect width="36" height="20" rx="10" fill="#cbd5e1" />
-                                                            <circle cx="10" cy="10" r="7" fill="white" />
-                                                        </svg>
-                                                        <% } %>
-                                            </span>
+                                <!-- Status Toggle -->
+                                <td class="px-4 py-3">
+                                    <%- include('../partials/toggleButtonSvg', { id: sub.id, isActive: sub.isActive,
+                                        prefix: 'main' , url: `/api/v1/sub-menu/${sub.id}/toggle` }) %>
+                                </td>
+
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button onclick="window.location.href='/settings/edit-sub-menu/<%= sub.id %>'"
+                                            class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
+                                            title="Edit">
+                                            <span class="iconify" data-icon="material-symbols:ink-pen" data-width="18"
+                                                data-height="18"></span>
+
                                         </button>
-                                    </td>
+                                        <!-- Delete -->
+                                        <button onclick="deleteMenuItem( 'sub-menu',<%= sub.id %>)"
+                                            class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
+                                            title="Delete">
+                                            <span class="iconify" data-icon="material-symbols:delete-outline-rounded"
+                                                data-width="16" data-height="16"></span>
+                                        </button>
+                                    </div>
+                                </td>
 
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <button
-                                                onclick="window.location.href='/settings/edit-sub-menu/<%= sub.id %>'"
-                                                class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
-                                                title="Edit">
-                                                <span class="iconify" data-icon="material-symbols:ink-pen" data-width="18" data-height="18"></span>
-                                                
-                                            </button>
-                                            <button onclick="deleteSubMenu('<%= sub.id %>')"
-                                                class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
-                                                title="Delete">
-                                                <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="18" data-height="18"></span>
-                                            </button>
-                                        </div>
-                                    </td>
+                            </tr>
+                            <% }); %>
 
-                                </tr>
-                                <% }); %>
+                    </tbody>
+                </table>
+            </div>
 
-                        </tbody>
-                    </table>
+            <% } else { %>
+                <div class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
+                    No sub menus found. Click "Add Sub Menu" to create one.
                 </div>
+                <% } %>
 
-                <% } else { %>
-                    <div
-                        class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
-                        No sub menus found. Click "Add Sub Menu" to create one.
-                    </div>
-                    <% } %>
-
-                    <script>
-
-        /* =========================
-           UNIVERSAL TOGGLE HANDLER
-        ========================= */
-        async function handleToggle(type, id, currentStatus) {
-            const icon = document.getElementById(`toggle-icon-${type}-${id}`);
-            const button = document.getElementById(`toggle-btn-${type}-${id}`);
-
-            if (!icon || !button) return;
-
-            const newStatus = !currentStatus;
-
-            // optimistic UI update
-            renderToggle(icon, button, newStatus);
-
-            try {
-                const res = await fetch(`/api/v1/sub-menu/${id}/toggle`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id })
-                });
-
-                const data = await res.json();
-
-                if (!data.success) {
-                    renderToggle(icon, button, currentStatus);
-                    return;
-                }
-                button.setAttribute(
-                    "onclick",
-                    type === "main"
-                        ? `toggleMainMenu('${id}', ${newStatus})`
-                        : `toggleSubMenu('${id}', ${newStatus})`
-                );
-
-            } catch (error) {
-                renderToggle(icon, button, currentStatus);
-                alert("Something went wrong");
-            }
-        }
-
-        function toggleSubMenu(id, currentStatus) {
-            handleToggle("sub", id, currentStatus);
-        }
-
-
-        /* =========================
-           TOGGLE UI RENDER
-        ========================= */
-        function renderToggle(icon, button, status) {
-            button.title = status ? "Active" : "Inactive";
-
-            icon.innerHTML = status
-                ? `
-        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-            <rect width="36" height="20" rx="10" fill="#10b981"/>
-            <circle cx="26" cy="10" r="7" fill="white"/>
-        </svg>
-    `
-                : `
-        <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-            <rect width="36" height="20" rx="10" fill="#cbd5e1"/>
-            <circle cx="10" cy="10" r="7" fill="white"/>
-        </svg>
-    `;
-        }
-
-
-        /* =========================
-           DELETE FUNCTIONS
-        ========================= */
-        async function deleteMainMenu(id, name) {
-            if (!confirm(`"${name}" sub menus will be delete`)) return;
-
-            await deleteItem(`/api/v1/main-menu/${id}`);
-        }
-
-        async function deleteSubMenu(id) {
-            console.log('delete id', id)
-            if (!confirm(`"${name}" `)) return;
-
-            await deleteItem(`/api/v1/sub-menu/${id}`);
-        }
-
-        async function deleteItem(url) {
-            try {
-                const res = await fetch(url, {
-                    method: "DELETE",
-                    headers: { "Content-Type": "application/json" }
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert(data.message || "Delete failed");
-                }
-
-            } catch (error) {
-                alert("Something went wrong");
-            }
-        }
-    </script>
+                <!-- scripts -->
+                    <script src="/js/theToggle.js"></script>
+                    <script src="/js/theDelete.js"></script>
 </body>
 
 </html>

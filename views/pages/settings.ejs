@@ -22,7 +22,7 @@
           <h2 class="text-lg font-medium text-slate-800">Navigation Settings</h2>
           <p class="text-sm text-slate-400 mt-1">Manage navigation links</p>
         </div>
-        <button id="mainMenuButton"
+        <button id="mainMenuButton" onclick="location.href = '/settings/add-main-menu'"
           class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
           <span class="iconify" data-icon="material-symbols:add" data-width="16" data-height="16"></span>
           Add Main Menu
@@ -48,8 +48,6 @@
             <tbody class="divide-y divide-slate-100">
 
               <% mainMenu.data.forEach(function(menu, index) { %>
-
-                <!-- id="row-..." — delete ke baad row hatane ke liye zaruri -->
                 <tr id="row-<%= menu.id %>" class="hover:bg-slate-50 transition-colors">
 
                   <!-- # -->
@@ -80,8 +78,8 @@
 
                   <!-- Status Toggle -->
                   <td class="px-4 py-3">
-                    <%- include('../partials/toggleButtonSvg', { id: menu.id, isActive: menu.isActive, prefix: 'main' , url:
-                      `/api/v1/main-menu/${menu.id}/toggle` }) %>
+                    <%- include('../partials/toggleButtonSvg', { id: menu.id, isActive: menu.isActive, prefix: 'main' ,
+                      url: `/api/v1/main-menu/${menu.id}/toggle` }) %>
                   </td>
 
                   <!-- Actions -->
@@ -105,7 +103,7 @@
                       </button>
 
                       <!-- Delete -->
-                      <button onclick="deleteItem(<%= menu.id %>, '<%= menu.title %>')"
+                      <button onclick="deleteMenuItem('main-menu', <%= menu.id %>)"
                         class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
                         title="Delete">
                         <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="16"
@@ -132,44 +130,8 @@
 
     </div>
   </div>
-
   <script src="/js/theToggle.js"></script>
-  <script>
-    // imports
-    /* ── Add Main Menu Button ── */
-    document.getElementById('mainMenuButton')?.addEventListener('click', () => {
-      location.href = '/settings/add-main-menu';
-    });
-
-    /* ── Delete ── */
-    async function deleteItem(id, name) {
-      if (!confirm(`"${name}" delete karna chahte ho?`)) return;
-
-      try {
-        const res = await fetch(`/api/v1/main-menu/${id}`, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          const row = document.getElementById(`row-${id}`);
-          if (row) {
-            row.style.transition = 'opacity 0.3s';
-            row.style.opacity = '0';
-            setTimeout(() => row.remove(), 300);
-          } else {
-            location.reload();
-          }
-        } else {
-          alert(data.message || 'Delete failed');
-        }
-
-      } catch {
-        alert('Something went wrong');
-      }
-    }
-  </script>
+  <script src="/js/theDelete.js"></script>
 </body>
 
 </html>

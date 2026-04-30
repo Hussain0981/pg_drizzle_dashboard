@@ -61,7 +61,7 @@ export const addService = async (payload: MainMenuItem) => {
 };
 
 // ── Delete Main Menu
-export const deleteService = async (id: number) => {
+export const deleteService = async (id: number | string) => {
     // Check if exists
     const item = await db.query.mainMenu.findFirst({
         where: eq(mainMenu.id, id),

@@ -28,8 +28,7 @@ export const addController = async (req: Request, res: Response) => {
 // delete
 export const deleteController = async (req: Request, res: Response) => {
     try {
-        const {id} = req.body
-        const user = await service.deleteService(id);
+        const user = await service.deleteService(req.params.id);
         successResponse(res, user, 'sub-menu successfully deleted');
 
     } catch (e) {
