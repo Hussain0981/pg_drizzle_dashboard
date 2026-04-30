@@ -10,7 +10,14 @@
   <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
 </head>
 
-<body>
+<body class="realtive">
+
+  <!-- overlay -->
+  <div id="dark-overlay" class=" hidden absolute inset-0 bg-black/50 h-screen w-full z-10"></div>
+  <div id="show-toast"
+    class="absolute hidden z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-md rounded-md w-sm place-items-center">
+    <%- include('../partials/deleteConfirmation') %>
+  </div>
   <div class="space-y-6">
 
     <!-- Main Menu Card -->
@@ -103,7 +110,8 @@
                       </button>
 
                       <!-- Delete -->
-                      <button onclick="deleteMenuItem('main-menu', <%= menu.id %>)"
+                      <button
+                        onclick="deleteMenuItem('main-menu', <%= menu.id %>); showDeleteConfirmation()"
                         class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
                         title="Delete">
                         <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="16"
@@ -132,6 +140,18 @@
   </div>
   <script src="/js/theToggle.js"></script>
   <script src="/js/theDelete.js"></script>
+  <script>
+    let darkOverlay = document.getElementById('dark-overlay');
+    let showToast = document.getElementById('show-toast');
+    function showDeleteConfirmation() {
+      darkOverlay.classList.remove('hidden')
+      showToast.classList.remove('hidden')
+    }
+    function hideDeleteConfirmation() {
+      darkOverlay.classList.add('hidden')
+      showToast.classList.add('grid')
+    }
+  </script>
 </body>
 
 </html>
