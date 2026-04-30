@@ -1,86 +1,59 @@
 import type { Response, Request } from "express";
 import express from 'express'
-import { getByIdService, getAllService as getMainMenuService, getByIdService as getByIdMainMenu } from "../../service/adminMenuService";
+import { getByIdService, getByIdService as getByIdMainMenu } from "../../service/adminMenuService";
 import { getByIdService as getByIdSubMenu } from "../../service/adminSubmenuService";
-import { toggleMenu } from '../../helper/toggleMenu'
-import { deleteItem } from '../../helper/deleteItem'
+import { parseId } from '../../helper/parseId'        
+import { renderPage } from '../../helper/renderPage' 
+import { attachMainMenu } from '../../middlewares/attachedMainMenu'
 
 const router = express.Router();
+
+// attached main menu for any route
+router.use(attachMainMenu);
 
 // GET - /settings
 router.get('/', async (req: Request, res: Response) => {
   try {
-    // Har request pe fresh data
-    const mainMenuData = await getMainMenuService();
-    res.render('pages/settings', {
-      layout: 'layouts/index',
-      pageTitle: 'Settings',
-      mainMenu: mainMenuData || [], 
-      toggle: toggleMenu,
-      delete: deleteItem,   
+    renderPage(res, 'settings', 'Settings', {
+      mainMenu: res.locals.mainMenu,
     });
   } catch (error) {
-    console.error('Error fetching menu data:', error);
-    res.status(500).render('pages/settings', {
-      layout: 'layouts/index',
-      pageTitle: 'Settings - Error',
-      mainMenu: [],
-    });
+    console.error('Error:', error);
+    renderPage(res, 'settings', 'Settings - Error', { mainMenu: [] });
   }
 });
 
 // GET - Add main menu form
 router.get('/add-main-menu', (req: Request, res: Response) => {
-  res.render('pages/mainMenu', {
-    layout: 'layouts/index',
-    pageTitle: 'Add Main Menu'
+  renderPage(res, 'mainMenu', 'Add Main Menu', {
+    mainMenu: res.locals.mainMenu
   });
-  req.flash('success', 'added successfully');
 });
 
 // GET - Add sub menu form
-router.get('/add-sub-menu', async (req: Request, res: Response) => {
-  try {
-    // Fresh data har baar
-    const mainMenuData = await getMainMenuService();
-
-    res.render('pages/subMenu', {
-      layout: 'layouts/index',
-      pageTitle: 'Add Sub Menu',
-      mainMenu: mainMenuData || [],
-      toggleFnc : toggleMenu
-    });
-  } catch (error) {
-    console.error('Error fetching main menu:', error);
-    res.render('pages/subMenu', {
-      layout: 'layouts/index',
-      pageTitle: 'Add Sub Menu',
-      mainMenu: []
-    });
-  }
+router.get('/add-sub-menu', (req: Request, res: Response) => {
+  renderPage(res, 'subMenu', 'Add Sub Menu', {
+    mainMenu: res.locals.mainMenu
+  });
 });
 
 // GET - Edit sub menu
 router.get('/edit-sub-menu/:id', async (req: Request, res: Response) => {
   try {
-    // NaN check
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseId(req.params.id);
+    if (!id) {
       res.status(400).send('Invalid ID');
       return;
     }
 
-    const mainMenuData = await getMainMenuService();
-    const record = await getByIdSubMenu(id)
+    const record = await getByIdSubMenu(id);
 
-    res.render('pages/editSubMenu', {
-      layout: 'layouts/index',
-      pageTitle: 'Edit Sub Menu',
-      mainMenu: mainMenuData || [],
+    renderPage(res, 'editSubMenu', 'Edit Sub Menu', {
+      mainMenu: res.locals.mainMenu,
       editId: record
     });
   } catch (error) {
-    console.error('Error fetching sub menu:', error);
+    console.error('Error:', error);
     res.status(500).send('Something went wrong');
   }
 });
@@ -88,62 +61,46 @@ router.get('/edit-sub-menu/:id', async (req: Request, res: Response) => {
 // GET - Edit main menu
 router.get('/edit-main-menu/:id', async (req: Request, res: Response) => {
   try {
-    // parseInt aur NaN check try ke andar
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseId(req.params.id);
+    if (!id) {
       res.status(400).send('Invalid ID');
       return;
     }
 
-    // getByIdService
-    const [mainMenuData, idData] = await Promise.all([
-      getMainMenuService(),
-      getByIdMainMenu(id)
-    ]);
-
+    const idData = await getByIdMainMenu(id);
     if (!idData) {
       res.status(404).send('Menu not found');
       return;
     }
 
-    res.render('pages/editMainMenu', {
-      layout: 'layouts/index',
-      pageTitle: 'Edit Main Menu',
-      mainMenu: mainMenuData || [],
+    renderPage(res, 'editMainMenu', 'Edit Main Menu', {
+      mainMenu: res.locals.mainMenu,
       data: idData
     });
   } catch (error) {
-    console.error('Error fetching main menu by id:', error);
+    console.error('Error:', error);
     res.status(500).send('Something went wrong');
   }
 });
 
-// GET - edit navigation
+// GET - Navigation
 router.get('/navigation/:id', async (req: Request, res: Response) => {
   try {
-    const userId = parseInt(req.params.id);
-
-    if (isNaN(userId)) {
+    const userId = parseId(req.params.id); 
+    if (!userId) {
       return res.redirect('back');
     }
 
-    const [mainMenuData, data] = await Promise.all([
-      getMainMenuService(),
-      getByIdService(userId)
-    ]);
+    const data = await getByIdService(userId);
 
-    res.render('pages/navigation', {
-      layout: 'layouts/index',
-      pageTitle: 'Navigation Setting',
-      mainMenu: mainMenuData || [],
+    renderPage(res, 'navigation', 'Navigation Setting', {
+      mainMenu: res.locals.mainMenu,
       data,
-      toggle: toggleMenu,
-      delete: deleteItem,
     });
 
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error fetching navigation:', message);
+    console.error('Error:', message);
 
     res.status(500).render('pages/error', {
       layout: 'layouts/index',
@@ -152,7 +109,5 @@ router.get('/navigation/:id', async (req: Request, res: Response) => {
     });
   }
 });
-
-
 
 export default router;

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="toggle-btn-<%= prefix %>-<%= id %>"
+        onclick="toggleItem('<%= id %>', <%= isActive %>, '<%= prefix %>', '<%= url %>')"
+        title="<%= isActive ? 'Active' : 'Inactive' %>">
+        <span id="toggle-icon-<%= prefix %>-<%= id %>">
+            <% if (isActive) { %>
+                <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+                    <rect width="36" height="20" rx="10" fill="#10b981" />
+                    <circle cx="26" cy="10" r="7" fill="white" />
+                </svg>
+                <% } else { %>
+                    <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+                        <rect width="36" height="20" rx="10" fill="#cbd5e1" />
+                        <circle cx="10" cy="10" r="7" fill="white" />
+                    </svg>
+                    <% } %>
+        </span>
+    </button>
+</body>
+
+</html>

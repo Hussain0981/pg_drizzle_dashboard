@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= settings || 'Settings' %></title>
+  <title>
+    <%= settings || 'Settings' %>
+  </title>
   <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
 </head>
+
 <body>
-
-    <%# toggle() %>
-    <%# delete() %>
-
   <div class="space-y-6">
 
     <!-- Main Menu Card -->
@@ -30,7 +30,7 @@
       </div>
 
       <!-- Table -->
-      <% if (mainMenu && mainMenu.data && mainMenu.data.length > 0) { %>
+      <% if (mainMenu && mainMenu.data && mainMenu.data.length> 0) { %>
         <div class="overflow-hidden border border-slate-200 rounded-lg">
           <table class="w-full text-sm">
             <thead>
@@ -38,9 +38,11 @@
                 <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">#</th>
                 <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
                 <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Order</th>
-                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Sub Menus</th>
+                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Sub Menus
+                </th>
                 <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                <th class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                <th class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Actions
+                </th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -51,19 +53,26 @@
                 <tr id="row-<%= menu.id %>" class="hover:bg-slate-50 transition-colors">
 
                   <!-- # -->
-                  <td class="px-4 py-3 text-slate-400"><%= index + 1 %></td>
+                  <td class="px-4 py-3 text-slate-400">
+                    <%= index + 1 %>
+                  </td>
 
                   <!-- Name -->
                   <td class="px-4 py-3 capitalize">
-                    <span class="font-medium text-slate-700"><%= menu.title %></span>
+                    <span class="font-medium text-slate-700">
+                      <%= menu.title %>
+                    </span>
                   </td>
 
                   <!-- Order -->
-                  <td class="px-4 py-3 text-slate-500"><%= menu.orderBy || '-' %></td>
+                  <td class="px-4 py-3 text-slate-500">
+                    <%= menu.orderBy || '-' %>
+                  </td>
 
                   <!-- Sub Menus Count -->
                   <td class="px-4 py-3">
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
                       <span class="iconify" data-icon="material-symbols:list" data-width="12" data-height="12"></span>
                       <%= menu.subMenus ? menu.subMenus.length : 0 %> items
                     </span>
@@ -71,23 +80,8 @@
 
                   <!-- Status Toggle -->
                   <td class="px-4 py-3">
-                    <button
-                      id="toggle-btn-main-<%= menu.id %>"
-                      onclick="toggle('<%= menu.id %>', <%= menu.isActive %>)"                      title="<%= menu.isActive ? 'Active' : 'Inactive' %>">
-                      <span id="toggle-icon-main-<%= menu.id %>">
-                        <% if (menu.isActive) { %>
-                          <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                            <rect width="36" height="20" rx="10" fill="#10b981"/>
-                            <circle cx="26" cy="10" r="7" fill="white"/>
-                          </svg>
-                        <% } else { %>
-                          <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-                            <rect width="36" height="20" rx="10" fill="#cbd5e1"/>
-                            <circle cx="10" cy="10" r="7" fill="white"/>
-                          </svg>
-                        <% } %>
-                      </span>
-                    </button>
+                    <%- include('../partials/toggleButtonSvg', { id: menu.id, isActive: menu.isActive, prefix: 'main' , url:
+                      `/api/v1/main-menu/${menu.id}/toggle` }) %>
                   </td>
 
                   <!-- Actions -->
@@ -95,104 +89,64 @@
                     <div class="flex items-center justify-end gap-2">
 
                       <!-- View -->
-                      <button
-                        onclick="window.location.href='/settings/navigation/<%= menu.id %>'"
+                      <button onclick="window.location.href='/settings/navigation/<%= menu.id %>'"
                         class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-green-600 hover:border-green-200 hover:bg-green-50 transition-colors"
                         title="View">
-                        <span class="iconify" data-icon="ic:outline-remove-red-eye" data-width="16" data-height="16"></span>
+                        <span class="iconify" data-icon="ic:outline-remove-red-eye" data-width="16"
+                          data-height="16"></span>
                       </button>
 
                       <!-- Edit -->
-                      <button
-                        onclick="window.location.href='/settings/edit-main-menu/<%= menu.id %>'"
+                      <button onclick="window.location.href='/settings/edit-main-menu/<%= menu.id %>'"
                         class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
                         title="Edit">
-                        <span class="iconify" data-icon="material-symbols:ink-pen" data-width="16" data-height="16"></span>
+                        <span class="iconify" data-icon="material-symbols:ink-pen" data-width="16"
+                          data-height="16"></span>
                       </button>
 
                       <!-- Delete -->
-                      <button
-                        onclick="deleteItem(<%= menu.id %>, '<%= menu.title %>')"
+                      <button onclick="deleteItem(<%= menu.id %>, '<%= menu.title %>')"
                         class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
                         title="Delete">
-                        <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="16" data-height="16"></span>
+                        <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="16"
+                          data-height="16"></span>
                       </button>
 
                     </div>
                   </td>
 
                 </tr>
-              <% }); %>
+                <% }); %>
 
             </tbody>
           </table>
         </div>
 
-      <% } else { %>
-        <div class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
-          <span class="iconify mx-auto mb-2 block" data-icon="material-symbols:menu-open" data-width="28" data-height="28"></span>
-          No main menus found. Click "Add Main Menu" to create one.
-        </div>
-      <% } %>
+        <% } else { %>
+          <div class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
+            <span class="iconify mx-auto mb-2 block" data-icon="material-symbols:menu-open" data-width="28"
+              data-height="28"></span>
+            No main menus found. Click "Add Main Menu" to create one.
+          </div>
+          <% } %>
 
     </div>
   </div>
 
+  <script src="/js/theToggle.js"></script>
   <script>
+    // imports
     /* ── Add Main Menu Button ── */
     document.getElementById('mainMenuButton')?.addEventListener('click', () => {
       location.href = '/settings/add-main-menu';
     });
-
-    /* ── Toggle Main Menu ── */
-    function toggleMainMenu(id, currentStatus) {
-      const icon   = document.getElementById(`toggle-icon-main-${id}`);
-      const button = document.getElementById(`toggle-btn-main-${id}`);
-      if (!icon || !button) return;
-
-      const newStatus = !currentStatus;
-      renderToggle(icon, button, newStatus); // optimistic UI
-
-      fetch(`/api/v1/main-menu/${id}/toggle`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (!data.success) {
-            renderToggle(icon, button, currentStatus); // revert
-            return;
-          }
-          // Next click ke liye updated status pass karo
-          button.setAttribute('onclick', `toggleMainMenu('${id}', ${newStatus})`);
-        })
-        .catch(() => {
-          renderToggle(icon, button, currentStatus); // revert
-          alert('Something went wrong');
-        });
-    }
-
-    /* ── Toggle UI Render ── */
-    function renderToggle(icon, button, status) {
-      button.title = status ? 'Active' : 'Inactive';
-      icon.innerHTML = status
-        ? `<svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-             <rect width="36" height="20" rx="10" fill="#10b981"/>
-             <circle cx="26" cy="10" r="7" fill="white"/>
-           </svg>`
-        : `<svg width="36" height="20" viewBox="0 0 36 20" fill="none">
-             <rect width="36" height="20" rx="10" fill="#cbd5e1"/>
-             <circle cx="10" cy="10" r="7" fill="white"/>
-           </svg>`;
-    }
 
     /* ── Delete ── */
     async function deleteItem(id, name) {
       if (!confirm(`"${name}" delete karna chahte ho?`)) return;
 
       try {
-        const res  = await fetch(`/api/v1/main-menu/${id}`, {
+        const res = await fetch(`/api/v1/main-menu/${id}`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -202,7 +156,7 @@
           const row = document.getElementById(`row-${id}`);
           if (row) {
             row.style.transition = 'opacity 0.3s';
-            row.style.opacity    = '0';
+            row.style.opacity = '0';
             setTimeout(() => row.remove(), 300);
           } else {
             location.reload();
@@ -217,4 +171,5 @@
     }
   </script>
 </body>
+
 </html>
