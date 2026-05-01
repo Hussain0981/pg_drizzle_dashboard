@@ -1,26 +1,46 @@
-async function deleteMenuItem(type: string, id: string) {
+let _deleteType: string | null = null;
+let _deleteId: number | null = null;
+
+function showDeleteConfirmation(type: string, id: number): void {
+    _deleteType = type;
+    _deleteId = id;
+    const model = document.getElementById('deleteModal');
+    if (model) {
+        model.classList.remove('hidden');
+    }
+}
+
+// Cancel button
+function hideDeleteConfirmation(): void {
+    _deleteType = null;
+    _deleteId = null;
+    const model = document.getElementById('deleteModal');
+    if (model) {
+        model.classList.add('hidden');
+    }
+}
+
+// Confirm button — actual delete call
+async function proceedDelete(): Promise<void> {
+    if (!_deleteType || !_deleteId) return;
+
     try {
-        console.log(typeof id, id)
-        const res = await fetch(`/api/v1/${type}/${id}`, {
+        const res: Response = await fetch(`/api/v1/${_deleteType}/${_deleteId}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
         });
-        const data = await res.json();
 
-        if (data.success) {
-            const row = document.getElementById(`row-${id}`);
-            if (row) {
-                row.style.transition = 'opacity 0.3s';
-                row.style.opacity = '0';
-                setTimeout(() => row.remove(), 300);
-            } else {
-                location.reload();
-            }
+        if (res.ok) {
+            hideDeleteConfirmation();
+            window.location.reload();
         } else {
-            alert(data.message || 'Delete failed');
-
+            alert('Delete failed. Please try again.');
         }
-    } catch (error) {
-        console.log(error)
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error(err.message);
+        } else {
+            console.error(err);
+        }
+        alert('Something went wrong.');
     }
 }

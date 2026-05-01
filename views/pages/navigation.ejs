@@ -9,8 +9,12 @@
 </head>
 
 <body>
-    <!-- ── Sub Menu Card ── -->
+
+    <%- include('../partials/deleteConfirmation') %>
+
+    <!-- Sub Menu Card -->
     <div class="bg-white rounded-lg shadow p-6">
+
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h2 class="text-lg font-medium text-slate-800 capitalize">
@@ -18,7 +22,10 @@
                 </h2>
                 <p class="text-sm text-slate-400 mt-1">Manage sidebar sub menu navigation links</p>
             </div>
-            <button id="subMenuButton"
+
+        
+            <button
+                onclick="window.location.href='/settings/add-sub-menu'"
                 class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M12 5v14M5 12h14" />
@@ -27,26 +34,19 @@
             </button>
         </div>
 
-        <!-- Sub Menu Table — grouped by main menu -->
-        <% if (data && data.data && data.data.subMenus && data.data.subMenus.length> 0) { %>
+        <!-- Sub Menu Table -->
+        <% if (data && data.data && data.data.subMenus && data.data.subMenus.length > 0) { %>
 
             <div class="overflow-hidden border border-slate-200 rounded-lg mb-4">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200">
-                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                #</th>
-                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                Name</th>
-                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                URL / Path</th>
-                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                Order</th>
-                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                Status</th>
-                            <th
-                                class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                Actions</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">#</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">URL / Path</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Order</th>
+                            <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                            <th class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -64,55 +64,68 @@
 
                                 <td class="px-4 py-3">
                                     <code class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
-                <%= sub.path || '-' %>
-              </code>
+                                        <%= sub.path || '-' %>
+                                    </code>
                                 </td>
 
                                 <td class="px-4 py-3 text-slate-500">
                                     <%= sub.orderBy || '-' %>
                                 </td>
 
-                                <!-- Status Toggle -->
                                 <td class="px-4 py-3">
-                                    <%- include('../partials/toggleButtonSvg', { id: sub.id, isActive: sub.isActive,
-                                        prefix: 'main' , url: `/api/v1/sub-menu/${sub.id}/toggle` }) %>
+                                    <%- include('../partials/toggleButtonSvg', {
+                                        id: sub.id,
+                                        isActive: sub.isActive,
+                                        prefix: 'main',
+                                        url: `/api/v1/sub-menu/${sub.id}/toggle`
+                                    }) %>
                                 </td>
 
                                 <td class="px-4 py-3">
                                     <div class="flex items-center justify-end gap-2">
-                                        <button onclick="window.location.href='/settings/edit-sub-menu/<%= sub.id %>'"
+
+                                        <!-- Edit Button -->
+                                        <button
+                                            onclick="window.location.href='/settings/edit-sub-menu/<%= sub.id %>'"
                                             class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
                                             title="Edit">
-                                            <span class="iconify" data-icon="material-symbols:ink-pen" data-width="18"
-                                                data-height="18"></span>
-
+                                            <span class="iconify"
+                                                data-icon="material-symbols:ink-pen"
+                                                data-width="18" data-height="18">
+                                            </span>
                                         </button>
-                                        <!-- Delete -->
-                                        <button onclick="deleteMenuItem( 'sub-menu',<%= sub.id %>)"
+
+                                        <!-- ✅ Fix: dono onclick combine kiye ek mein -->
+                                        <button
+                                            onclick="showDeleteConfirmation('sub-menu', <%= sub.id %>)"
                                             class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
                                             title="Delete">
-                                            <span class="iconify" data-icon="material-symbols:delete-outline-rounded"
-                                                data-width="16" data-height="16"></span>
+                                            <span class="iconify"
+                                                data-icon="material-symbols:delete-outline-rounded"
+                                                data-width="16" data-height="16">
+                                            </span>
                                         </button>
+
                                     </div>
                                 </td>
 
                             </tr>
-                            <% }); %>
+                        <% }); %>
 
                     </tbody>
                 </table>
             </div>
 
-            <% } else { %>
-                <div class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
-                    No sub menus found. Click "Add Sub Menu" to create one.
-                </div>
-                <% } %>
+        <% } else { %>
+            <div class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
+                No sub menus found. Click "Add Sub Menu" to create one.
+            </div>
+        <% } %>
 
-                <!-- scripts -->
-                    <script src="/js/theToggle.js"></script>
-                    <script src="/js/theDelete.js"></script>
+    </div>
+
+    <script src="/js/theToggle.js"></script>
+    <script src="/js/theDelete.js"></script>
+
 </body>
-
 </html>

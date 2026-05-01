@@ -1,23 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <div class="p-5">
-        <div class="flex flex-col gap-y-5">
-            <div class="flex items-center justify-center">
-                <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="25"
-                     data-height="16"></span>
+    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden" id="deleteModal">
+        <div class="bg-white rounded-2xl p-8 w-80 flex flex-col items-center gap-4">
+
+            <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center">
+                <span class="iconify text-red-500" data-icon="material-symbols:delete-outline-rounded" data-width="28"
+                    data-height="28">
+                </span>
             </div>
-        <h2>Are you sure to delete?</h2>
-        <div class="flex items-center gap-2">
-            <button class="btn btn-outline" click="hideDeleteConfirmation()">Cancel</button>
-            <button class="btn bg-[#10B981] text-white">Confirm</button>
-        </div>
+
+            <div class="text-center">
+                <h2 class="text-base font-medium text-gray-800 mb-1">Are you sure?</h2>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    This action cannot be undone.<br>The item will be permanently deleted.
+                </p>
+            </div>
+
+            <div class="flex gap-3 w-full mt-2">
+                <button onclick="hideDeleteConfirmation()"
+                    class="flex-1 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition">
+                    Cancel
+                </button>
+                <button onclick="proceedDelete()"
+                    class="flex-1 py-2 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition">
+                    Delete
+                </button>
+            </div>
+
         </div>
     </div>
+
+    <script>
+        function showDeleteConfirmation() {
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function hideDeleteConfirmation() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        function confirmDelete() {
+            console.log("Deleted!");
+            hideDeleteConfirmation();
+        }
+    </script>
 </body>
+
 </html>

@@ -7,151 +7,134 @@
   <title>
     <%= settings || 'Settings' %>
   </title>
-  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
 </head>
 
 <body class="realtive">
 
-  <!-- overlay -->
-  <div id="dark-overlay" class=" hidden absolute inset-0 bg-black/50 h-screen w-full z-10"></div>
-  <div id="show-toast"
-    class="absolute hidden z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-md rounded-md w-sm place-items-center">
-    <%- include('../partials/deleteConfirmation') %>
-  </div>
-  <div class="space-y-6">
+  <%- include('../partials/deleteConfirmation') %>
 
-    <!-- Main Menu Card -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="space-y-6">
 
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h2 class="text-lg font-medium text-slate-800">Navigation Settings</h2>
-          <p class="text-sm text-slate-400 mt-1">Manage navigation links</p>
-        </div>
-        <button id="mainMenuButton" onclick="location.href = '/settings/add-main-menu'"
-          class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
-          <span class="iconify" data-icon="material-symbols:add" data-width="16" data-height="16"></span>
-          Add Main Menu
-        </button>
-      </div>
+      <!-- Main Menu Card -->
+      <div class="bg-white rounded-lg shadow p-6">
 
-      <!-- Table -->
-      <% if (mainMenu && mainMenu.data && mainMenu.data.length> 0) { %>
-        <div class="overflow-hidden border border-slate-200 rounded-lg">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="bg-slate-50 border-b border-slate-200">
-                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">#</th>
-                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
-                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Order</th>
-                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Sub Menus
-                </th>
-                <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                <th class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-
-              <% mainMenu.data.forEach(function(menu, index) { %>
-                <tr id="row-<%= menu.id %>" class="hover:bg-slate-50 transition-colors">
-
-                  <!-- # -->
-                  <td class="px-4 py-3 text-slate-400">
-                    <%= index + 1 %>
-                  </td>
-
-                  <!-- Name -->
-                  <td class="px-4 py-3 capitalize">
-                    <span class="font-medium text-slate-700">
-                      <%= menu.title %>
-                    </span>
-                  </td>
-
-                  <!-- Order -->
-                  <td class="px-4 py-3 text-slate-500">
-                    <%= menu.orderBy || '-' %>
-                  </td>
-
-                  <!-- Sub Menus Count -->
-                  <td class="px-4 py-3">
-                    <span
-                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                      <span class="iconify" data-icon="material-symbols:list" data-width="12" data-height="12"></span>
-                      <%= menu.subMenus ? menu.subMenus.length : 0 %> items
-                    </span>
-                  </td>
-
-                  <!-- Status Toggle -->
-                  <td class="px-4 py-3">
-                    <%- include('../partials/toggleButtonSvg', { id: menu.id, isActive: menu.isActive, prefix: 'main' ,
-                      url: `/api/v1/main-menu/${menu.id}/toggle` }) %>
-                  </td>
-
-                  <!-- Actions -->
-                  <td class="px-4 py-3">
-                    <div class="flex items-center justify-end gap-2">
-
-                      <!-- View -->
-                      <button onclick="window.location.href='/settings/navigation/<%= menu.id %>'"
-                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-green-600 hover:border-green-200 hover:bg-green-50 transition-colors"
-                        title="View">
-                        <span class="iconify" data-icon="ic:outline-remove-red-eye" data-width="16"
-                          data-height="16"></span>
-                      </button>
-
-                      <!-- Edit -->
-                      <button onclick="window.location.href='/settings/edit-main-menu/<%= menu.id %>'"
-                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
-                        title="Edit">
-                        <span class="iconify" data-icon="material-symbols:ink-pen" data-width="16"
-                          data-height="16"></span>
-                      </button>
-
-                      <!-- Delete -->
-                      <button
-                        onclick="deleteMenuItem('main-menu', <%= menu.id %>); showDeleteConfirmation()"
-                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
-                        title="Delete">
-                        <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="16"
-                          data-height="16"></span>
-                      </button>
-
-                    </div>
-                  </td>
-
-                </tr>
-                <% }); %>
-
-            </tbody>
-          </table>
-        </div>
-
-        <% } else { %>
-          <div class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
-            <span class="iconify mx-auto mb-2 block" data-icon="material-symbols:menu-open" data-width="28"
-              data-height="28"></span>
-            No main menus found. Click "Add Main Menu" to create one.
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-lg font-medium text-slate-800">Navigation Settings</h2>
+            <p class="text-sm text-slate-400 mt-1">Manage navigation links</p>
           </div>
-          <% } %>
+          <button id="mainMenuButton" onclick="location.href = '/settings/add-main-menu'"
+            class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
+            <span class="iconify" data-icon="material-symbols:add" data-width="16" data-height="16"></span>
+            Add Main Menu
+          </button>
+        </div>
 
+        <!-- Table -->
+        <% if (mainMenu && mainMenu.data && mainMenu.data.length> 0) { %>
+          <div class="overflow-hidden border border-slate-200 rounded-lg">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200">
+                  <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">#</th>
+                  <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
+                  <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Order</th>
+                  <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Sub Menus
+                  </th>
+                  <th class="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Status
+                  </th>
+                  <th class="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+
+                <% mainMenu.data.forEach(function(menu, index) { %>
+                  <tr id="row-<%= menu.id %>" class="hover:bg-slate-50 transition-colors">
+
+                    <!-- # -->
+                    <td class="px-4 py-3 text-slate-400">
+                      <%= index + 1 %>
+                    </td>
+
+                    <!-- Name -->
+                    <td class="px-4 py-3 capitalize">
+                      <span class="font-medium text-slate-700">
+                        <%= menu.title %>
+                      </span>
+                    </td>
+
+                    <!-- Order -->
+                    <td class="px-4 py-3 text-slate-500">
+                      <%= menu.orderBy || '-' %>
+                    </td>
+
+                    <!-- Sub Menus Count -->
+                    <td class="px-4 py-3">
+                      <span
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                        <span class="iconify" data-icon="material-symbols:list" data-width="12" data-height="12"></span>
+                        <%= menu.subMenus ? menu.subMenus.length : 0 %> items
+                      </span>
+                    </td>
+
+                    <!-- Status Toggle -->
+                    <td class="px-4 py-3">
+                      <%- include('../partials/toggleButtonSvg', { id: menu.id, isActive: menu.isActive, prefix: 'main'
+                        , url: `/api/v1/main-menu/${menu.id}/toggle` }) %>
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="px-4 py-3">
+                      <div class="flex items-center justify-end gap-2">
+
+                        <!-- View -->
+                        <button onclick="window.location.href='/settings/navigation/<%= menu.id %>'"
+                          class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-green-600 hover:border-green-200 hover:bg-green-50 transition-colors"
+                          title="View">
+                          <span class="iconify" data-icon="ic:outline-remove-red-eye" data-width="16"
+                            data-height="16"></span>
+                        </button>
+
+                        <!-- Edit -->
+                        <button onclick="window.location.href='/settings/edit-main-menu/<%= menu.id %>'"
+                          class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-colors"
+                          title="Edit">
+                          <span class="iconify" data-icon="material-symbols:ink-pen" data-width="16"
+                            data-height="16"></span>
+                        </button>
+
+                        <!-- Delete -->
+                        <button onclick="showDeleteConfirmation('main-menu', <%= menu.id %>)"
+                          class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
+                          title="Delete">
+                          <span class="iconify" data-icon="material-symbols:delete-outline-rounded" data-width="16"
+                            data-height="16"></span>
+                        </button>
+
+                      </div>
+                    </td>
+
+                  </tr>
+                  <% }); %>
+
+              </tbody>
+            </table>
+          </div>
+
+          <% } else { %>
+            <div class="text-center py-10 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
+              <span class="iconify mx-auto mb-2 block" data-icon="material-symbols:menu-open" data-width="28"
+                data-height="28"></span>
+              No main menus found. Click "Add Main Menu" to create one.
+            </div>
+            <% } %>
+
+      </div>
     </div>
-  </div>
-  <script src="/js/theToggle.js"></script>
-  <script src="/js/theDelete.js"></script>
-  <script>
-    let darkOverlay = document.getElementById('dark-overlay');
-    let showToast = document.getElementById('show-toast');
-    function showDeleteConfirmation() {
-      darkOverlay.classList.remove('hidden')
-      showToast.classList.remove('hidden')
-    }
-    function hideDeleteConfirmation() {
-      darkOverlay.classList.add('hidden')
-      showToast.classList.add('grid')
-    }
-  </script>
+    <script src="/js/theToggle.js"></script>
+    <script src="/js/theDelete.js"></script>
 </body>
 
 </html>
