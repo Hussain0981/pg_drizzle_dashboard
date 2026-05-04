@@ -34,7 +34,6 @@
 
             <!-- Middleware ka data use karo - No JS fetch needed -->
             <div id="sidebar-menu">
-                <!-- theSidebar.ejs -->
 
                 <% if (menuItems && menuItems.data && menuItems.data.length> 0) { %>
 
@@ -147,34 +146,55 @@
                 }
 
                 const container = document.getElementById('sidebar-menu');
-                if (!container) return;
+                if (!container) {
+                    console.warn('sidebar-menu not found');
+                    return;
+                }
 
-                container.innerHTML = menuArray.map(menu => `
-                <p class="text-slate-500 text-xs font-medium uppercase tracking-wider px-2 mb-2 mt-3">
-                    ${menu.title || menu.name || 'Section'}
-                </p>
-                ${menu.subMenus && menu.subMenus.length > 0
-                        ? menu.subMenus.map(sub => {
-                            const subPath = sub.url || sub.path || '#';
-                            const isActive = window.location.pathname === subPath;
-                            return `
-                            <div class="group flex items-center gap-1 rounded-lg mb-1 px-2 py-1.5 capitalize
-                                ${isActive ? 'bg-slate-800' : 'hover:bg-slate-800/60'}
-                                transition-colors duration-150">
-                                <a href="${subPath}" class="flex items-center gap-2 flex-1 min-w-0
-                                    ${isActive ? 'text-white' : 'text-slate-400 hover:text-slate-200'}">
-                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <circle cx="12" cy="12" r="2"/>
-                                    </svg>
-                                    <span class="text-sm truncate">${sub.title || sub.name || 'Menu Item'}</span>
-                                </a>
-                            </div>
-                        `;
-                        }).join('')
-                        : ''
-                    }
-                <div class="border-t border-slate-700/50 my-3"></div>
-            `).join('');
+            
+                const activeMenus = menuArray.filter(menu => menu.isActive);
+
+                if (activeMenus.length === 0) {
+                    container.innerHTML = `<p class="text-slate-500 text-xs px-2">No menu items found</p>`;
+                    return;
+                }
+
+                container.innerHTML = activeMenus.map(menu => {
+                    
+                    const activeSubs = (menu.subMenus || []).filter(sub => sub.isActive);
+
+                    return `
+                    <p class="text-slate-500 text-xs font-medium uppercase tracking-wider px-2 mb-2 mt-3">
+                        ${menu.title || menu.name || 'Section'}
+                    </p>
+
+                    ${activeSubs.length > 0
+                            ? activeSubs.map(sub => {
+                                const subPath = sub.url || sub.path || '#';
+                                const isCurrentPath = window.location.pathname === subPath;
+                                return `
+                                <div class="group flex items-center gap-1 rounded-lg mb-1 px-2 py-1.5 capitalize
+                                    ${isCurrentPath ? 'bg-slate-800' : 'hover:bg-slate-800/60'}
+                                    transition-colors duration-150">
+                                    <a href="${subPath}" class="flex items-center gap-2 flex-1 min-w-0
+                                        ${isCurrentPath ? 'text-white' : 'text-slate-400 hover:text-slate-200'}">
+                                        ${sub.icon
+                                        ? `<img src="${sub.icon}" class="w-4 h-4 flex-shrink-0" />`
+                                        : `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <circle cx="12" cy="12" r="2"/>
+                                               </svg>`
+                                    }
+                                        <span class="text-sm truncate">${sub.title || sub.name || 'Menu Item'}</span>
+                                    </a>
+                                </div>
+                            `;
+                            }).join('')
+                            : ''
+                        }
+
+                    <div class="border-t border-slate-700/50 my-3"></div>
+                `;
+                }).join('');
 
             } catch (err) {
                 console.error('Sidebar refresh error:', err);

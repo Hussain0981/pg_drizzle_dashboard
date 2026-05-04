@@ -185,8 +185,8 @@
 
                 const result = await res.json();
 
+                await window.refreshSidebar();
                 if (res.ok) {
-                    await window.refreshSidebar();
                     btn.innerHTML = `<span class="iconify" data-icon="material-symbols:check-circle-outline" data-width="16" data-height="16"></span>
                     Saved! `;
                     btn.classList.replace('bg-emerald-500', 'bg-green-500');

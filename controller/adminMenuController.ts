@@ -72,8 +72,12 @@ export const getById = async (req: Request, res: Response) => {
 // toggle by id
 export const toggleSubMenu = async (req: Request, res: Response) => {
     try {
-        const { id } = req.body
-        const user = await service.toggleSubMenu(id);
+        const { id } = req.params
+        const userId = parseInt(id)
+        if(isNaN(userId)) {
+            throw new Error('Please pass correct id')
+        }
+        const user = await service.toggleSubMenu(userId);
         successResponse(res, user, 'menu fetch by id');
 
     } catch (e) {

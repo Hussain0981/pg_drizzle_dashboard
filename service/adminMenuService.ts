@@ -15,30 +15,37 @@ interface MainMenuItem {
 // ── Add Main Menu 
 export const addService = async (payload: MainMenuItem) => {
     const { title, path, orderBy = 0, isActive = true } = payload;
-    console.log('h service', payload);
-
 
     // Validate required fields
     if (!title || !path) {
         throw new Error('Title and path are required');
     }
 
-    // Duplicate check
-    const existingItem = await db.query.mainMenu.findFirst({
+    // Title check
+    const existingTitle = await db.query.mainMenu.findFirst({
         where: eq(mainMenu.title, title),
     });
 
-    if (existingItem) {
-        throw new Error('Main menu item already exists');
+    if (existingTitle) {
+        throw new Error('Menu title already exists');
     }
 
-    // Check for duplicate path
+    // Path check
     const existingPath = await db.query.mainMenu.findFirst({
         where: eq(mainMenu.path, path),
     });
 
     if (existingPath) {
-        throw new Error('Path already exists');
+        throw new Error('Menu path already exists');
+    }
+
+    // OrderBy check
+    const existingOrder = await db.query.mainMenu.findFirst({
+        where: eq(mainMenu.orderBy, orderBy),
+    });
+
+    if (existingOrder) {
+        throw new Error(`Order ${orderBy} already exists`);
     }
 
     // Insert
@@ -59,7 +66,6 @@ export const addService = async (payload: MainMenuItem) => {
         data: menuItem
     };
 };
-
 // ── Delete Main Menu
 export const deleteService = async (id: number | string) => {
     // Check if exists
@@ -269,18 +275,24 @@ export const toggleSubMenu = async (id: number) => {
 
     const item = await db.query.mainMenu.findFirst({
         where: eq(mainMenu.id, id)
-    })
+    });
 
     if (!item) {
-        throw new Error('Main menu is not found')
+        throw new Error('Main menu is not found');
     }
 
-    await db
+    const [updated] = await db
         .update(mainMenu)
         .set({
-            isActive: !item?.isActive
+            isActive: !item.isActive,
+            updatedAt: new Date()
         })
+        .where(eq(mainMenu.id, id))
+        .returning();
+
     return {
-        data: item
-    }
+        success: true,
+        message: `Menu ${updated.isActive ? 'activated' : 'deactivated'} successfully`,
+        data: updated
+    };
 };
