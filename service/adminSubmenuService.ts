@@ -6,7 +6,7 @@ interface SubMenuItem {
     title: string;
     icon: string;
     orderBy: number;
-    mainMenuId: number;
+    parent_id: number;
     path: string;
     isActive?: boolean;
     requiresAuth?: boolean;
@@ -15,10 +15,10 @@ interface SubMenuItem {
 
 // ── Add Sub Menu Item 
 export const addService = async (payload: SubMenuItem) => {
-    const { title, path, icon, mainMenuId } = payload;
+    const { title, path, icon, parent_id } = payload;
     console.log('service', payload)
     const parentMenu = await db.query.mainMenu.findFirst({
-        where: eq(mainMenu.id, mainMenuId),
+        where: eq(mainMenu.id, parent_id),
     });
 
     if (!parentMenu) {
@@ -40,7 +40,7 @@ export const addService = async (payload: SubMenuItem) => {
             title,
             path,
             icon: icon ?? null,
-            mainMenuId: mainMenuId,
+            mainMenuId: parent_id,
         })
         .returning();
 
@@ -81,9 +81,9 @@ export const updateService = async (id: number, payload: Partial<SubMenuItem>) =
         throw new Error('Your Sub menu is not active please active first')
     }
 
-    if (payload.mainMenuId) {
+    if (payload.parent_id) {
         const parentMenu = await db.query.mainMenu.findFirst({
-            where: eq(mainMenu.id, payload.mainMenuId),
+            where: eq(mainMenu.id, payload.parent_id),
         });
 
         if (!parentMenu) {

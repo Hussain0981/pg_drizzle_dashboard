@@ -1,4 +1,4 @@
-// services/admin/mainMenu.service.ts
+
 import { db } from "../config/dbConnection";
 import { mainMenu, subMenu } from "../db/schema/navigationItems";
 import { eq, asc } from "drizzle-orm";
@@ -93,7 +93,7 @@ export const deleteService = async (id: number | string) => {
 };
 export const updateService = async (id: number, payload: Partial<MainMenuItem>) => {
     const { title, orderBy, path } = payload.payload;
-    console.log(title, orderBy, path ) 
+    console.log(title, orderBy, path)
 
     const item = await db.query.mainMenu.findFirst({
         where: eq(mainMenu.id, id),

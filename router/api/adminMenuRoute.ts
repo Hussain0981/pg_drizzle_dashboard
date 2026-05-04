@@ -1,7 +1,9 @@
 import express from "express";
 import * as controller from "../../controller/adminMenuController";
-
 const router = express.Router();
+
+router.get("/menu", controller.getFreshMenus);       // get menus
+
 router.post("/", controller.addController);       // CREATE
 router.get("/", controller.getAll);               // GET ALL
 router.get("/:id", controller.getById);          // GET ONE

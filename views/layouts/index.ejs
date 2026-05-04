@@ -20,6 +20,31 @@
       <%- body %>
     </main>
   </div>
+  <script>
+     // Sidebar reload functions
+  async function refreshSidebar() {
+    try {
+      const res = await fetch('/api/menu-items');
+      const { data } = await res.json();
+      
+      const ul = document.getElementById('sidebar-menu');
+      
+      ul.innerHTML = data.map(item => `
+        <li>
+          <a href="${item.url}" class="${window.location.pathname === item.url ? 'active' : ''}">
+            <i class="${item.icon || ''}"></i>
+            ${item.name}
+          </a>
+        </li>
+      `).join('');
+      
+    } catch (err) {
+      console.error('Sidebar refresh failed:', err);
+    }
+  }
 
+  // Page load pe ek baar chala do
+  document.addEventListener('DOMContentLoaded', refreshSidebar);
+  </script>
 </body>
 </html>

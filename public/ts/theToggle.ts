@@ -1,7 +1,7 @@
 /* ── Reusable Toggle ── */
 
 // Toggle SVG HTML
-function getToggleSVG(status) {
+function getToggleSVG(status: boolean): string {
   return status
     ? `<svg width="36" height="20" viewBox="0 0 36 20" fill="none">
          <rect width="36" height="20" rx="10" fill="#10b981"/>
@@ -14,32 +14,52 @@ function getToggleSVG(status) {
 }
 
 // UI update karo
-function renderToggle(iconEl, buttonEl, status) {
+function renderToggle(
+  iconEl: HTMLElement,
+  buttonEl: HTMLElement,
+  status: boolean
+): void {
   buttonEl.title = status ? 'Active' : 'Inactive';
   iconEl.innerHTML = getToggleSVG(status);
 }
 
+// API Response Type
+interface ToggleResponse {
+  success: boolean;
+  message?: string;
+  data?: unknown;
+}
+
 // Main reusable function
-// prefix  = 'main' | 'sub' | 'nav' — har page ka alag prefix
-// url     = '/api/v1/main-menu/123/toggle'
-async function toggleItem(id, currentStatus, prefix, url) {
-  const icon   = document.getElementById(`toggle-icon-${prefix}-${id}`);
+async function toggleItem(
+  id: string | number,
+  currentStatus: boolean,
+  prefix: 'main' | 'sub' | 'nav',
+  url: string
+): Promise<void> {
+  const icon = document.getElementById(`toggle-icon-${prefix}-${id}`);
   const button = document.getElementById(`toggle-btn-${prefix}-${id}`);
+
   if (!icon || !button) return;
 
-  const newStatus = !currentStatus;
-  renderToggle(icon, button, newStatus); // optimistic UI
+  const newStatus: boolean = !currentStatus;
+  renderToggle(icon, button, newStatus); // Optimistic UI
 
   try {
-    const res  = await fetch(url, {
+    const res = await fetch(url, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
+      body: JSON.stringify({ id }),
     });
-    const data = await res.json();
+
+    const data: ToggleResponse = await res.json();
+
+    if (res.ok) {
+      await (window as Window & { refreshSidebar?: () => Promise<void> }).refreshSidebar?.();
+    }
 
     if (!data.success) {
-      renderToggle(icon, button, currentStatus); // revert
+      renderToggle(icon, button, currentStatus); // Revert
       return;
     }
 
@@ -49,8 +69,9 @@ async function toggleItem(id, currentStatus, prefix, url) {
       `toggleItem('${id}', ${newStatus}, '${prefix}', '${url}')`
     );
 
-  } catch {
-    renderToggle(icon, button, currentStatus); // revert
+  } catch (error: unknown) {
+    renderToggle(icon, button, currentStatus); // Revert
+    console.error('Toggle error:', error);
     alert('Something went wrong');
   }
 }

@@ -32,6 +32,8 @@ async function proceedDelete(): Promise<void> {
         if (res.ok) {
             hideDeleteConfirmation();
             window.location.reload();
+            await (window as Window & { refreshSidebar?: () => Promise<void> }).refreshSidebar?.();
+
         } else {
             alert('Delete failed. Please try again.');
         }

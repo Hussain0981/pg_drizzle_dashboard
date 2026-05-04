@@ -81,3 +81,13 @@ export const toggleSubMenu = async (req: Request, res: Response) => {
         failureResponse(res, errorMessage);
     }
 };
+// get fresh menu
+export const getFreshMenus = async (req: Request, res: Response) => {
+    console.log('api come to controller')
+    try {
+        const data = await service.getAllService();
+        res.json({ success: true, data });
+    } catch (error) {
+        res.json({ success: false, data: [] });
+    }
+};
