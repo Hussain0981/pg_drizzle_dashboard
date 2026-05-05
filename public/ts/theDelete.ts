@@ -29,13 +29,18 @@ async function proceedDelete(): Promise<void> {
             method: 'DELETE',
         });
 
+        const data = await res.json().catch(() => ({
+        success: false,
+        message: 'Server error — invalid response',
+    }));
+
         if (res.ok) {
             hideDeleteConfirmation();
             window.location.reload();
             await (window as Window & { refreshSidebar?: () => Promise<void> }).refreshSidebar?.();
 
         } else {
-            alert('Delete failed. Please try again.');
+            alert(data.message)
         }
     } catch (err: unknown) {
         if (err instanceof Error) {
