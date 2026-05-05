@@ -8,7 +8,9 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { layoutDataMiddleware } from './middlewares/layoutDataMiddleware';
 import flash from 'connect-flash'
-
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import cors from 'cors'
 
 // web routes import 
 import webAdminRoute from './router/web/adminRoute'
@@ -40,6 +42,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser(ENV.SESSION_SECRET));
+
+// helmet 
+app.use(helmet()); 
+// rate limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests
+});
+app.use(limiter)
+// cores
+app.use(cors({
+  origin: ['https://localhost:/3000'], // whitelist specific origins
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 
 // session
 app.use(session({
