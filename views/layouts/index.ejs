@@ -20,5 +20,14 @@
       <%- body %>
     </main>
   </div>
+
+  <script>
+     window.addEventListener('pageshow', function (event) {
+        // persisted = true mean if it come from  cache
+        if (event.persisted) {
+            window.refreshSidebar();
+        }
+    });
+  </script>
 </body>
 </html>

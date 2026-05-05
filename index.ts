@@ -31,8 +31,8 @@ const __dirname = dirname(__filename);
 
 // solve MIME error css
 app.get('public/css/output.css', (req, res) => {
-    res.type('text/css');
-    res.sendFile(join(__dirname, "public/css/output.css"));
+  res.type('text/css');
+  res.sendFile(join(__dirname, "public/css/output.css"));
 })
 
 // Middleware
@@ -69,8 +69,8 @@ app.use(flash());
 // available in every template
 app.use((req, res, next) => {
   res.locals.success = req.flash('success');
-  res.locals.error   = req.flash('error');
-  res.locals.info    = req.flash('info');
+  res.locals.error = req.flash('error');
+  res.locals.info = req.flash('info');
   next();
 });
 
@@ -82,6 +82,17 @@ app.set('layout', 'layouts/index');
 // global middleware
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
+  next();
+});
+
+// Remove cashed version
+// app.ts ya server.ts mein
+app.use((req, res, next) => {
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+  });
   next();
 });
 // routes middlewares
@@ -98,8 +109,8 @@ app.use('/api/v1/main-menu', apiAdminMenuSettings)
 // ============= START SERVER =============
 
 app.listen(PORT, async () => {
-    // await initSuperAdmin()
-    console.log(` Server is running on http://localhost:${PORT}`);
+  // await initSuperAdmin()
+  console.log(` Server is running on http://localhost:${PORT}`);
 });
 
 export default app;
