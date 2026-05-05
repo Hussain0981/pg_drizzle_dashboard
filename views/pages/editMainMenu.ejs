@@ -135,8 +135,12 @@
             Saved!
           `;
                     await window.refreshSidebar();
+                    // create emit to notify parent page
+                    const menuChannel = new BroadcastChannel('menu_updates');
+                    menuChannel.postMessage({ type: 'MENU_UPDATED' });
                     btn.classList.replace('bg-emerald-500', 'bg-green-500');
-
+                    window.history.back();
+                    
                     setTimeout(() => {
                         btn.disabled = false;
                         btn.classList.replace('bg-green-500', 'bg-emerald-500');

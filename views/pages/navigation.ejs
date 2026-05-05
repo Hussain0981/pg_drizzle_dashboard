@@ -126,6 +126,17 @@
 
     <script src="/js/theToggle.js"></script>
     <script src="/js/theDelete.js"></script>
+    <script>
+      // Broadcast channel
+      const menuChannel = new BroadcastChannel('sub_menu_updated');
+
+      // when come message from another page then refresh
+      menuChannel.onmessage = function (event) {
+        if (event.data.type === 'MENU_UPDATED') {
+          window.location.reload();
+        }
+      };
+    </script>
 
 </body>
 </html>
